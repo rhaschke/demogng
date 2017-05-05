@@ -2582,6 +2582,7 @@ Vector.prototype.rotate = function (angle) {
     this.y = yn + 0.5;
     return this;
 }
+var lastSignal = new Vector
 
 /*
 // Vector.prototype.sqdist = function(vector) {

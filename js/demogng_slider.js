@@ -95,9 +95,15 @@ xx = new LogPar({
 });
 xx = new LogPar({
     model: "OPT",
+    name: "correlatedSamples",
+    value: false,
+    rem:"use correlated stimuli"
+});
+xx = new LogPar({
+    model: "OPT",
     name: "restartAfterModelChange",
     value: true,
-    rem: "automatically restart the simulation if a xx = new model has been selected"
+    rem: "automatically restart the simulation if a new model has been selected"
 });
 xx = new LogPar({
     model: "OPT",

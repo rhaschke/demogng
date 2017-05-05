@@ -82,7 +82,20 @@ function getSignalFromPD(signal) {
     } else {
         cl("not found property " + curpd);
     }
-    signal.randomize();
+    if (glob.correlatedSamples) {
+        signal.randomize()
+        signal.multiplyBy(0.1)
+        signal.x += lastSignal.x - 0.05
+        signal.y += lastSignal.y - 0.05
+        signal.x = Math.min(Math.max(signal.x, 0), 1)
+        signal.y = Math.min(Math.max(signal.y, 0), 1)
+        if (signal.randomize === Vector.prototype.randomize3) {
+            signal.z += Math.min(Math.max(lastSignal.z - 0.05, 0), 1)
+            signal.z = Math.min(Math.max(signal.z, 0), 1)
+        }
+    } else
+        signal.randomize();
+    lastSignal.copyFrom(signal)
     var i;
     switch (curpd) {
         case "SquareNonUniform":
