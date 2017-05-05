@@ -1,14 +1,15 @@
 //
 // Copyright 2016-2017 by Bernd Fritzke, All Rights Reserved
 //
+/*global cl*/
 "use strict";
 
 var glob3D = {
-    cubes : [],
-    scene : "",
-    camera : "",
-    renderer : "",
-    cubeno : 0
+    cubes: [],
+    scene: "",
+    camera: "",
+    renderer: "",
+    cubeno: 0
 };
 
 var glob = {
@@ -47,8 +48,8 @@ var glob = {
     colors: {
         adapt0: "#FF8888", // rosa
         adapt1: "#FFDDDD", // nearly white
-        bg_2D: "white",//"#eeeeee",
-        bg_2D_converged: "#FFFACD",//"#eeeeee",
+        bg_2D: "white", //"#eeeeee",
+        bg_2D_converged: "#FFFACD", //"#eeeeee",
         bg_3D: 0xffffff, //0xeeeeee,
         bg_grad0: "#AAAAFF", // bluish // background
         bg_grad1: "white",
@@ -64,7 +65,7 @@ var glob = {
         inserted: "yellow",
         lbg_data: "black",
         node_2D: "#75f07d", //"yellow", //"#2E8B57", //"Lime",
-        pd_2D: "#ddd",//"#faa",
+        pd_2D: "#ddd", //"#faa",
         pd_3D: "#aaa",
         pd_3Dproj: "#ff6666",
         pd_grad0: "white", // distribution
@@ -76,7 +77,7 @@ var glob = {
         txt_grad00: "magenta", // Model-Name
         txt_grad05: "blue",
         txt_grad10: "red",
-        voronoi: "LightCoral"//"red", //"#777",
+        voronoi: "LightCoral" //"red", //"#777",
     }
 };
 glob.colors.converged = shadeBlend(0.0, glob.colors.node_2D);
@@ -94,7 +95,7 @@ var doGlobalEdgeAging = true;
 var debug = false;
 var nn; // le net
 var signalsPresented;
-var signalsPresented_prev= 0;
+var signalsPresented_prev = 0;
 var signalAtLastTrace = 0;
 var sigsPerSecond = 0;
 var timestamp = 0;
@@ -316,9 +317,18 @@ var pds = {
     "UnitSquare": {
         width: 1.0,
         yoff: 0,
-        xoff: 0,
+        xoff: 0
     },
     "SquareNonUniform": { // Thanks to Robert Haschke for contributing this
+        width: 1,
+        yoff: 0,
+        xoff: 0
+    },
+    "Fovea": {
+        rad_o:0.45,
+        rad_i:0.15,
+        p_o:0.4,
+        p_i:0.6,
         width: 1,
         yoff: 0,
         xoff: 0
@@ -329,12 +339,12 @@ var pds = {
         xoff: 0.2,
         yoff: 0.7,
         xoff_m: 0, // mouse offset in rect
-        yoff_m: 0, // mouse offset in rect
+        yoff_m: 0 // mouse offset in rect
     },
     "Square-N": {
         width: 0.2,
         yoff: 0.4, // (1-0.2)/2
-        xoff: 0,
+        xoff: 0
     },
     "2Squares": {
         width: 0.5
@@ -393,7 +403,7 @@ var pds = {
     },
     "bigSmallCircle": {
         radius1: 0.02,
-        radius2: 0.4,
+        radius2: 0.4
     },
     "PulsingCircle-N": {
         radius: 0.05,
@@ -402,7 +412,7 @@ var pds = {
     "Circle-N": {
         radius: 0.20,
         xoff: 0.0,
-        yoff: 0.0,
+        yoff: 0.0
     },
     "Ring": {
         radius: 0.45
@@ -430,21 +440,21 @@ var pds = {
     "Clusters": {
         n: 12,
         fields: {
-            0: [1,3,7],
+            0: [1, 3, 7],
             1: [11],
             3: [2],
-            5: [3,7],
+            5: [3, 7],
             8: [11],
             10: [2],
-            11: [10],
+            11: [10]
         },
         xy: []
     },
     "Clusters2": {
         n: 12,
         fields: {
-            0: [0,11],
-            11: [0,11],
+            0: [0, 11],
+            11: [0, 11]
         },
         xy: []
     },
@@ -458,10 +468,10 @@ var pds = {
     "Clusters3": {
         n: 25,
         fields: {
-            1: [2,17],
-            8: [0,11,21],
-            14: [0,21],
-            20: [8,14,16],
+            1: [2, 17],
+            8: [0, 11, 21],
+            14: [0, 21],
+            20: [8, 14, 16]
         },
         xy: []
     },
@@ -469,14 +479,14 @@ var pds = {
         rawdata: cactusdata,
         n: 12,
         depth: shapeDepth,
-        zoff:0.45,
+        zoff: 0.45,
         xy: []
     },
     "Cloud": {
         rawdata: clouddata,
         n: 12,
         depth: shapeDepth,
-        zoff:0.45,
+        zoff: 0.45,
         xy: []
     }
 };
@@ -484,22 +494,25 @@ var pds = {
 //
 // monkey-patching str (endsWith n.a. in IE11)
 //
-String.prototype.startsWith = function(prefix) {
+String.prototype.startsWith = function (prefix) {
     return this.indexOf(prefix) === 0;
 };
 
-String.prototype.endsWith = function(suffix) {
-    return this.match(suffix+"$") == suffix;
+String.prototype.endsWith = function (suffix) {
+    return this.match(suffix + "$") === suffix;
 };
-function isRotSym(pd){
-    return
+
+function isRotSym(pd) {
+    return;
 }
 // returns true, if x is a member of the array arr
-function isIn(x,arr) {
-    return arr.indexOf(x) > -1
+function isIn(x, arr) {
+    return arr.indexOf(x) > -1;
 }
-function setPDAttributes(){
-    for (var p in pds) {
+
+function setPDAttributes() {
+    var p;
+    for (p in pds) {
         var pd = pds[p];
         if (p === "123-D") {
             /*
@@ -510,49 +523,62 @@ function setPDAttributes(){
 			linel: 0.2,
 			rad: 0.2		
 			*/
-            pd.xoff_box=(1-pd.boxl-pd.rectl-pd.linel-2*pd.rad)/2.0;
-            pd.yoff_box = (1-pd.boxw)/2.0;
-            pd.zoff_box = (1-pd.boxh)/2.0;
+            pd.xoff_box = (1 - pd.boxl - pd.rectl - pd.linel - 2 * pd.rad) / 2.0;
+            pd.yoff_box = (1 - pd.boxw) / 2.0;
+            pd.zoff_box = (1 - pd.boxh) / 2.0;
 
-            pd.xoff_rect = pd.xoff_box+pd.boxl;
-            pd.yoff_rect = (1-pd.boxw)/2.0;
+            pd.xoff_rect = pd.xoff_box + pd.boxl;
+            pd.yoff_rect = (1 - pd.boxw) / 2.0;
             pd.zoff_rect = 0.5;
 
-            pd.xoff_line = pd.xoff_rect+pd.rectl;
+            pd.xoff_line = pd.xoff_rect + pd.rectl;
             pd.yoff_line = 0.5;
             pd.zoff_line = 0.5;
 
-            pd.xoff_circle=pd.xoff_line+pd.linel+pd.rad;//center
-            pd.yoff_circle=0.5;
-            pd.zoff_circle=0.5;
+            pd.xoff_circle = pd.xoff_line + pd.linel + pd.rad; //center
+            pd.yoff_circle = 0.5;
+            pd.zoff_circle = 0.5;
             cl("Multi prepared");
             //cd(pd);
         }
         if (p.endsWith("-N")) {
-            cl("non-stationary: "+p);
+            cl("non-stationary: " + p);
             pd.stationary = false;
         } else {
-            cl("stationary: "+p);
+            cl("stationary: " + p);
             pd.stationary = true;
             //console.log("stationary: "+p);
         }
-        pd.rotationSymmetric = isIn(p,["Circle","PulsingCircle-N","Circle-N","Ring","Donut"]);
+        pd.rotationSymmetric = isIn(p, ["Circle", "PulsingCircle-N", "Circle-N", "Ring", "Donut"]);
     }
 }
-function resetRotation(){
-    for (var p in pds) {
+
+function resetRotation() {
+    var p;
+    for (p in pds) {
         pds[p].angle = 0.0;
         pds[p].ready = false; // enforces castPD
     }
 }
-function shadeBlend(p,c0,c1){
-    var n=p<0?p*-1:p,u=Math.round,w=parseInt;
-    if(c0.length>7){
-        var f=c0.split(","),t=(c1?c1:p<0?"rgb(0,0,0)":"rgb(255,255,255)").split(","),R=w(f[0].slice(4)),G=w(f[1]),B=w(f[2]);
-        return "rgb("+(u((w(t[0].slice(4))-R)*n)+R)+","+(u((w(t[1])-G)*n)+G)+","+(u((w(t[2])-B)*n)+B)+")"
-    }else{
-        var f=w(c0.slice(1),16),t=w((c1?c1:p<0?"#000000":"#FFFFFF").slice(1),16),R1=f>>16,G1=f>>8&0x00FF,B1=f&0x0000FF;
-        return "#"+(0x1000000+(u(((t>>16)-R1)*n)+R1)*0x10000+(u(((t>>8&0x00FF)-G1)*n)+G1)*0x100+(u(((t&0x0000FF)-B1)*n)+B1)).toString(16).slice(1)
+
+function shadeBlend(p, c0, c1) {
+    var n = p < 0 ? p * -1 : p,
+        u = Math.round,
+        w = parseInt;
+    if (c0.length > 7) {
+        var f = c0.split(","),
+            t = (c1 ? c1 : p < 0 ? "rgb(0,0,0)" : "rgb(255,255,255)").split(","),
+            R = w(f[0].slice(4)),
+            G = w(f[1]),
+            B = w(f[2]);
+        return "rgb(" + (u((w(t[0].slice(4)) - R) * n) + R) + "," + (u((w(t[1]) - G) * n) + G) + "," + (u((w(t[2]) - B) * n) + B) + ")";
+    } else {
+        var f = w(c0.slice(1), 16),
+            t = w((c1 ? c1 : p < 0 ? "#000000" : "#FFFFFF").slice(1), 16),
+            R1 = f >> 16,
+            G1 = f >> 8 & 0x00FF,
+            B1 = f & 0x0000FF;
+        return "#" + (0x1000000 + (u(((t >> 16) - R1) * n) + R1) * 0x10000 + (u(((t >> 8 & 0x00FF) - G1) * n) + G1) * 0x100 + (u(((t & 0x0000FF) - B1) * n) + B1)).toString(16).slice(1);
     }
 }
 setPDAttributes();

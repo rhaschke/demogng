@@ -11,7 +11,18 @@
 /*jslint node: true */
 /*jslint browser:true */
 /*jslint plusplus: true */
+/*global glob3D, glob, cl, nn, pds, curpd, requestAnimationFrame, THREE, loopGNG, doKeyDown, doKeyUp, ui, Par, handleResize2,
+render, redraw, M3D, mousemovehandler, mouseuphandler,
+mousedownhandler, startFun, rundDemo, nextPD, prevPD,
+nextModel, prevSpeed, nextSpeed, terminateModes, setViewMode,
+resetFun, terminateDemo, restartFun, runDemo, prevModel,
+flashHide, alterImage, demoFun, stopFun, handleResize, mmh, sigStore, raiseSettings, raiseSettings3D, haltDemo, loopNG,
+LogPar, loopSOM, loopGG, loopHCL,loopCHL, flashN, stepTimeOut,
+terminateAutoRestart, handleAutoRestart, maxSignalsDrawn,
+old_timestamp*/
 
+
+/*jslint vars: true, devel: true, nomen: true, indent: 4, maxerr: 100, plusplus: true, white: true */
 "use strict";
 
 // For new model:
@@ -19,7 +30,7 @@
 // - case in function resetFun()
 //
 //
-var signal = new Vector(0, 0);// once, global
+var signal = new Vector(0, 0); // once, global
 var can2D = document.querySelector('#mycanvas');
 var div3D = document.querySelector('#div3d');
 var ctx = can2D.getContext('2d');
@@ -35,7 +46,7 @@ div3D.addEventListener('keyup', doKeyUp, true);
 
 function show3D() {
     $(".MM3").show();
-    $(".MM4").css("visibility","visible");
+    $(".MM4").css("visibility", "visible");
     if (ui) {
         $(".ButtonVoronoi").button().button("disable");
         $("#showSettings3D").button().button("enable");
@@ -46,7 +57,7 @@ function show3D() {
     handleResize2(); // for div3H
     $("#div3d").show().css("display", "inline-block");
     $("#mycanvas").hide();
-    Par.set("_3DPD",true);
+    Par.set("_3DPD", true);
     //Par.set("showSignals",true); // not needed anymore with solid bocks
     VBNN.prototype.draw = VBNN.prototype.draw3D;
     cl("show3D(): 3D visible!");
@@ -93,9 +104,12 @@ function toggle3D() {
 }
 
 //$("#apptitle").click(function() {Par.toggle("_3DV");});
-$("#div3Hs").click(function () {$("#div3H").show(); $("#div3Hs").hide(); });
+$("#div3Hs").click(function () {
+    $("#div3H").show();
+    $("#div3Hs").hide();
+});
 
-var pingedNode = undefined;
+var pingedNode;
 var shouldStopDemo = false;
 
 // Timeouts
@@ -118,14 +132,14 @@ $("#mycanvas").mouseup(mouseuphandler);
 //$('body').on('contextmenu', 'img', function(e){ return false; });
 //$('body').on('contextmenu', '#mycanvas', function(e){ return false; }); // todo reactivate
 if (ui) {
-    $("button" ).button();
-    $("#radio" ).buttonset();
-    $(".startButton").button( "option", "label", '<i class="fa fa-play"></i> start');
+    $("button").button();
+    $("#radio").buttonset();
+    $(".startButton").button("option", "label", '<i class="fa fa-play"></i> start');
     $(".startButton").click(startFun);
     $(".demoButton").click(runDemo);
     $(".3DButton").click(toggle3D);
     $(".2DButton").click(toggle3D);
-    $(".restartButton").button( "option", "label", '<i class="fa fa-refresh"></i> restart');
+    $(".restartButton").button("option", "label", '<i class="fa fa-refresh"></i> restart');
 }
 
 var MSL = "Model"; // Model
@@ -134,105 +148,112 @@ var SSL = "Speed"; //Speed
 var NB = "&nbsp;";
 if (ui) {
     // next PD
-    $(".npd").click(nextPD).button( "option", "label", DSL+NB+'<i class="fa fa-step-forward"></i>');
+    $(".npd").click(nextPD).button("option", "label", DSL + NB + '<i class="fa fa-step-forward"></i>');
     // prev PD
-    $(".ppd").click(prevPD).button( "option", "label", '<i class="fa fa-step-backward"></i>'+NB+DSL);
+    $(".ppd").click(prevPD).button("option", "label", '<i class="fa fa-step-backward"></i>' + NB + DSL);
     // prev model
-    $(".pmodel").click(prevModel).button( "option", "label", '<i class="fa fa-step-backward"></i>'+NB+MSL);
+    $(".pmodel").click(prevModel).button("option", "label", '<i class="fa fa-step-backward"></i>' + NB + MSL);
     // next model
-    $(".nmodel").click(nextModel).button( "option", "label", MSL+NB+'<i class="fa fa-step-forward"></i>');
+    $(".nmodel").click(nextModel).button("option", "label", MSL + NB + '<i class="fa fa-step-forward"></i>');
     // prev speed
-    $(".pspeed").click(prevSpeed).button( "option", "label", '<i class="fa fa-step-backward"></i>'+NB+SSL);
+    $(".pspeed").click(prevSpeed).button("option", "label", '<i class="fa fa-step-backward"></i>' + NB + SSL);
     // next speed
-    $(".nspeed").click(nextSpeed).button( "option", "label", SSL+NB+'<i class="fa fa-step-forward"></i>');
+    $(".nspeed").click(nextSpeed).button("option", "label", SSL + NB + '<i class="fa fa-step-forward"></i>');
     // reset
-    $(".resetButton").button( "option", "label", '<i class="fa fa-stop"></i> reset');
+    $(".resetButton").button("option", "label", '<i class="fa fa-stop"></i> reset');
 
     //
     // define click events for non-image buttons
     //
     $(".resetButton").click(terminateModes).click(redraw).click(resetFun);
     $(".restartButton").click(terminateDemo).click(terminateAutoRestart).click(redraw).click(restartFun);
-    $("#hideControls").click(function() {setViewMode("embedded")});
-    $("#showControls").click(function() {setViewMode("desktop")});
+    $("#hideControls").click(function () {
+        setViewMode("embedded");
+    });
+    $("#showControls").click(function () {
+        setViewMode("desktop");
+    });
 }
 //
 // define click events for image buttons
 //
-var imis = ["showNodes","showEdges","showSignals", "showTrace","showVoronoi","showRotate",
-            "showPDs","showAutoRestart","showSingleStep"];
-for (var i in imis) {
+var imis = ["showNodes", "showEdges", "showSignals", "showTrace", "showVoronoi", "showRotate",
+            "showPDs", "showAutoRestart", "showSingleStep"];
+var i;
+for (i in imis) {
     var x = imis[i];
     var basename = x.substring(4);
     if (glob[x]) {
-        $(x).css('background-image',"url(images/"+basename+".png)")
+        $(x).css('background-image', "url(images/" + basename + ".png)");
     } else {
-        $(x).css('background-image',"url(images/"+basename+"_gs.png)")
+        $(x).css('background-image', "url(images/" + basename + "_gs.png)");
     }
     // create click function for this button
-    document.getElementById(imis[i]).onclick = (function() {
+    document.getElementById(imis[i]).onclick = (function () {
         var ft = imis[i];
-        return function() {
+        return function () {
             // access properties using this keyword
             var fullname = ft; // e.g. showPDs
             // showPDs ==> PDs
             var basename = fullname.substring(4);
             // set correct image
-            if ( this.checked ) {
-                $(".show"+basename).css('background-image',"url(images/"+basename+".png)")
+            if (this.checked) {
+                $(".show" + basename).css('background-image', "url(images/" + basename + ".png)");
             } else {
-                $(".show"+basename).css('background-image',"url(images/"+basename+"_gs.png)")
+                $(".show" + basename).css('background-image', "url(images/" + basename + "_gs.png)");
             }
             //cl("setting glob."+fullname+" to "+this.checked);
-            glob[fullname]=this.checked;
-            Par.set(fullname,this.checked);
+            glob[fullname] = this.checked;
+            Par.set(fullname, this.checked);
             if (nn && nn.isLBGX) {
-                if (fullname==="showVoronoi") {
-                    Par.set("lbg_alwaysVoronoi",this.checked);
+                if (fullname === "showVoronoi") {
+                    Par.set("lbg_alwaysVoronoi", this.checked);
                 }
             }
-            if (glob._3DV && nn) {nn.update3DBuffer();};
+            if (glob._3DV && nn) {
+                nn.update3DBuffer();
+            }
             redraw();
-        }
+        };
     })();
-};
+}
 $("#showAutoRestart").click(redraw).click(alterImage).click(handleAutoRestart);
 $("#showSingleStep").click(alterImage).click(handleSingleStepClick).click(redraw);
 // show settings window
-$("#showSettings").click(function() {
+$("#showSettings").click(function () {
     $("#settingsWindow").toggle();
     raiseSettings();
 });
-$("#showSettings3D").click(function() {
+$("#showSettings3D").click(function () {
     $("#settings3DWindow").toggle();
     raiseSettings3D();
 });
 
 // show help window
-$("#showHelp").click(function() {
+$("#showHelp").click(function () {
     $("#keyhelpWindow").toggle();
     raiseKeyHelp();
 });
 
-function xscale(x){
-    return x*can2D.width;
+function xscale(x) {
+    return x * can2D.width;
 }
 // reverse xscale
-function xscaleR(x){
-    return x*1.0/can2D.width;
+function xscaleR(x) {
+    return x * 1.0 / can2D.width;
 }
 
-function yscale(y){
-    return y*can2D.height;
+function yscale(y) {
+    return y * can2D.height;
 }
 // reverse yscale
-function yscaleR(y){
-    return y*1.0/can2D.height;
+function yscaleR(y) {
+    return y * 1.0 / can2D.height;
 }
 
-function runDemo () {
+function runDemo() {
     if (ui) {
-        $(".demoButton").button( "option", "label", '<i class="fa fa-stop"></i> demo');
+        $(".demoButton").button("option", "label", '<i class="fa fa-stop"></i> demo');
         $("#showAutoRestart").button("disable");
         $("#showSingleStep").button("disable");
     }
@@ -247,16 +268,17 @@ function runDemo () {
 // Button SingleStep was clicked
 //
 function handleSingleStepClick() {
-    if($("#showSingleStep").prop('checked')) {
+    if ($("#showSingleStep").prop('checked')) {
         // begin of singlestep
         if (ui) {
-            $("#showAutoRestart").button("disable");cl("--------------- disa autores");
+            $("#showAutoRestart").button("disable");
+            cl("--------------- disa autores");
             $(".demoButton").button("disable");
             $(".startButton").button("disable");
         }
         glob.singleStepMode = true;
-        Par.set("gng_showError",0);
-        Par.set("gng_showUtility",0);
+        Par.set("gng_showError", 0);
+        Par.set("gng_showUtility", 0);
         startFun();
     } else {
         // ending singlestep
@@ -275,12 +297,14 @@ function handleSingleStepClick() {
 // Button AutoRestart was clicked
 //
 function countDown(msecs) {
-    glob.countDownVal = msecs/1000.0;
+    glob.countDownVal = msecs / 1000.0;
     //msecs/1000.0);
     msecs -= 1000;
     clearTimeout(countDownTimeout);
-    if (msecs>=0) {
-        countDownTimeout = setTimeout(function() { countDown(msecs)}, 1000);
+    if (msecs >= 0) {
+        countDownTimeout = setTimeout(function () {
+            countDown(msecs);
+        }, 1000);
     } else {
         glob.countDownVal = 0;
         redraw();
@@ -295,7 +319,8 @@ function handleAutoRestart(event) {
     }
     if ($("#showAutoRestart").prop('checked')) {
         if (ui) {
-            $("#showSingleStep").button("disable");cl("--------------- showsistep disable");
+            $("#showSingleStep").button("disable");
+            cl("--------------- showsistep disable");
             $(".demoButton").button("disable");
         }
         glob.autoRestartMode = true;
@@ -303,9 +328,11 @@ function handleAutoRestart(event) {
             cl("glob.running");
             // install timeout
             if (!nn.isLBGX) {
-                countDown(glob.autoRestartTime*1000);
+                countDown(glob.autoRestartTime * 1000);
                 clearTimeout(myTimeout);
-                myTimeout = setTimeout(function() { stopAndMaybeRestart()}, glob.autoRestartTime*1000); //forceStop	in start_inr
+                myTimeout = setTimeout(function () {
+                    stopAndMaybeRestart();
+                }, glob.autoRestartTime * 1000); //forceStop	in start_inr
             }
         } else {
             cl("not glob.running");
@@ -336,53 +363,54 @@ function alterImage(event) {
     var fullname = event.target.id; // e.g. showPDs
     // showPDs ==> PDs
     var basename = fullname.substring(4);
-    if ($("#"+fullname).prop('checked')) {
-        $(".show"+basename).css('background-image',"url(images/"+basename+".png)")
+    if ($("#" + fullname).prop('checked')) {
+        $(".show" + basename).css('background-image', "url(images/" + basename + ".png)");
     } else {
-        $(".show"+basename).css('background-image',"url(images/"+basename+"_gs.png)")
+        $(".show" + basename).css('background-image', "url(images/" + basename + "_gs.png)");
     }
 }
 
 // show help window
 function raiseKeyHelp() {
     //cl("rkh");
-    $( "#settings3DWindow" ).zIndex(10);
-    $( "#keyhelpWindow" ).zIndex(15);
-    $( "#settingsWindow" ).zIndex(12);
+    $("#settings3DWindow").zIndex(10);
+    $("#keyhelpWindow").zIndex(15);
+    $("#settingsWindow").zIndex(12);
 }
 
 // show settings window
 function raiseSettings() {
     //cl("rse");
-    $( "#settings3DWindow" ).zIndex(10);
-    $( "#keyhelpWindow" ).zIndex(12);
-    $( "#settingsWindow" ).zIndex(15);
+    $("#settings3DWindow").zIndex(10);
+    $("#keyhelpWindow").zIndex(12);
+    $("#settingsWindow").zIndex(15);
 }
+
 function raiseSettings3D() {
     //cl("rse");
-    $( "#keyhelpWindow" ).zIndex(10);
-    $( "#settingsWindow" ).zIndex(12);
-    $( "#settings3DWindow" ).zIndex(15);
+    $("#keyhelpWindow").zIndex(10);
+    $("#settingsWindow").zIndex(12);
+    $("#settings3DWindow").zIndex(15);
 }
 
 
 $('#mycanvas').css('cursor', 'default');
 if (ui) {
-    $( "#keyhelpWindow" ).draggable().hide().click(raiseKeyHelp); // make draggable and hide for now
-    $( "#settingsWindow" ).draggable().hide().click(raiseSettings); // make draggable and hide for now
-    $( "#settings3DWindow" ).draggable().hide().click(raiseSettings3D); // make draggable and hide for now
+    $("#keyhelpWindow").draggable().hide().click(raiseKeyHelp); // make draggable and hide for now
+    $("#settingsWindow").draggable().hide().click(raiseSettings); // make draggable and hide for now
+    $("#settings3DWindow").draggable().hide().click(raiseSettings3D); // make draggable and hide for now
 } else {
-    $( "#keyhelpWindow" ).hide().click(raiseKeyHelp); // make draggable and hide for now
-    $( "#settingsWindow" ).hide().click(raiseSettings); // make draggable and hide for now
+    $("#keyhelpWindow").hide().click(raiseKeyHelp); // make draggable and hide for now
+    $("#settingsWindow").hide().click(raiseSettings); // make draggable and hide for now
 }
 
-$("#mycanvas").attr("contentEditable", "true")
+$("#mycanvas").attr("contentEditable", "true");
 $("#mycanvas")[0].contentEditable = true;
 var curmodel = "";
-var curpd ="Circle";
+var curpd = "Circle";
 var prev_curpd = "";
 
-$(window).resize(function() {
+$(window).resize(function () {
     handleResize();
     redraw();
 });
@@ -390,62 +418,62 @@ $(window).resize(function() {
 // check if we are on a mobile platform
 var mobileReason = "none";
 var isMobile = {
-    minwidth:600,
-    minheight:500,
-    isSmall: function() {
+    minwidth: 600,
+    minheight: 500,
+    isSmall: function () {
         var small = false;
-        if ($(window).width()<this.minwidth) {
+        if ($(window).width() < this.minwidth) {
             small = true;
-            cl("isSmall: width "+ $(window).width() + " < " + this.minwidth);
-            mobileReason = "width"+$(window).width();
-        } else if ($(window).height()<this.minheight) {
+            cl("isSmall: width " + $(window).width() + " < " + this.minwidth);
+            mobileReason = "width" + $(window).width();
+        } else if ($(window).height() < this.minheight) {
             small = true;
-            cl("isSmall: height "+ $(window).height() + " < " + this.minheight);
-            mobileReason = "height"+$(window).height();
+            cl("isSmall: height " + $(window).height() + " < " + this.minheight);
+            mobileReason = "height" + $(window).height();
         }
         return small;
     },
-    Android: function() {
+    Android: function () {
         var ret = navigator.userAgent.match(/Android/i);
         if (ret) {
             mobileReason = "Android";
         }
         return ret;
     },
-    BlackBerry: function() {
-        var ret =  navigator.userAgent.match(/BlackBerry/i);
+    BlackBerry: function () {
+        var ret = navigator.userAgent.match(/BlackBerry/i);
         if (ret) {
             mobileReason = "BlackBerry";
         }
         return ret;
     },
-    iOS: function() {
-        var ret =  navigator.userAgent.match(/iPhone|iPad|iPod/i);
+    iOS: function () {
+        var ret = navigator.userAgent.match(/iPhone|iPad|iPod/i);
         if (ret) {
             mobileReason = "iPhone|iPad|iPod";
         }
         return ret;
     },
-    Opera: function() {
-        var ret =  navigator.userAgent.match(/Opera Mini/i);
+    Opera: function () {
+        var ret = navigator.userAgent.match(/Opera Mini/i);
         if (ret) {
             mobileReason = "Opera Mini";
         }
         return ret;
     },
-    Windows: function() {
-        var ret =  navigator.userAgent.match(/IEMobile/i);
+    Windows: function () {
+        var ret = navigator.userAgent.match(/IEMobile/i);
         if (ret) {
             mobileReason = "IEMobile";
         }
         return ret;
     },
-    any: function() {
-        var ret = isMobile.isSmall() ||isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows();
-        if(ret) {
-            cl("*********************************** Mobile due to "+mobileReason);
+    any: function () {
+        var ret = isMobile.isSmall() || isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows();
+        if (ret) {
+            cl("*********************************** Mobile due to " + mobileReason);
         }
-        return ret===null?false:true;
+        return ret === null ? false : true;
     }
 };
 
@@ -456,7 +484,7 @@ function handleResize(keepViewMode) {
     // no viewmode given, set based on screensize
     //
     if (!keepViewMode) {
-        if (glob.viewMode != "embedded") {
+        if (glob.viewMode !== "embedded") {
             // desktop .....
             if (isMobile.any()) {
                 setViewMode("embedded");
@@ -474,13 +502,13 @@ function handleResize2() {
     var elem = document.getElementById('root');
     var rect = elem.getBoundingClientRect();
     var h = rect.height; // of root div
-    var w = rect.width;  // of root div
+    var w = rect.width; // of root div
 
     //cl("root: w:"+w+" h:"+h);
     //var maxH = window.innerHeight;
     // smaller of height and width
     var can2D = document.querySelector('canvas');
-    var rest = window.innerWidth-w; // todo
+    var rest = window.innerWidth - w; // todo
     //cl("rest = "+rest); //todo uncomment
     //cl ("window.height = " + $(window).height());
 
@@ -489,16 +517,17 @@ function handleResize2() {
         var canmax_w = window.innerWidth;
         $("#root").hide();
     } else {
-        var canmax_w = window.innerWidth - w-0;
+        var canmax_w = window.innerWidth - w - 0;
     }
 
     // height
     var canmax_h = window.innerHeight;
-    var mmw = Math.min(canmax_w,rest)-1; // needed to keep in line // todo cange to 1
+    var mmw = Math.min(canmax_w, rest) - 1; // needed to keep in line // todo cange to 1
+    var mmh;
     if (glob._3DV) {
-        var mmh = window.innerHeight;
+        mmh = window.innerHeight;
     } else {
-        var mmh = Math.min(window.innerHeight,rest); // square
+        mmh = Math.min(window.innerHeight, rest); // square
     }
 
     // square shape for 2D
@@ -506,7 +535,7 @@ function handleResize2() {
     can2D.width = mmh;
     // full size for 3D
     if (glob3D.renderer) {
-        glob3D.renderer.setSize(mmw,mmh);
+        glob3D.renderer.setSize(mmw, mmh);
         glob3D.camera.aspect = mmw / mmh;
         glob3D.camera.updateProjectionMatrix();
     }
@@ -514,7 +543,7 @@ function handleResize2() {
 
 function redraw() {
     if (nn) {
-        nn.draw(/*sigStore, noOfRecentSignals*/);
+        nn.draw( /*sigStore, noOfRecentSignals*/ );
     }
 }
 
@@ -522,11 +551,12 @@ function globalInit() {
     sigStore = [];
     var i;
     // generate some signals for display
-    for (i=0;i<maxSignalsDrawn;i++) {
+    for (i = 0; i < maxSignalsDrawn; i++) {
         sigStore.push(new Vector()); // globalInit()
     }
     handleResize();
 }
+
 function restartFun() {
     //var from="[["+(restartFun.caller?restartFun.caller.name:"none")+"]]";
     //cl(">> restartFun: called from: " + from);
@@ -544,9 +574,9 @@ function resetFun(from) {
     stopFun();
     //setSignalsPresented(0, true);
     signalsPresented = 0;
-    glob.signalsPresentedPrev=0;
+    glob.signalsPresentedPrev = 0;
     signalAtLastTrace = 0;
-    old_signo=0;
+    old_signo = 0;
     old_timestamp = 0;
     var netsize;
     // show buttons depending on model
@@ -556,7 +586,7 @@ function resetFun(from) {
         } else {
             $("#showEdges").button("disable");
         }
-        if(!$("#showAutoRestart").prop('checked')) {
+        if (!$("#showAutoRestart").prop('checked')) {
             $("#showSingleStep").button("enable");
         }
         $("#showAutoRestart").button("enable");
@@ -568,8 +598,8 @@ function resetFun(from) {
             loop = loopGNG;
             VBNN.prototype.adapt = VBNN.prototype.adaptGNG;
             netsize = 2;
-            Par.set("gng_doUtility",curmodel === "GNG-U");
-            Par.set("freezeStructure",false);
+            Par.set("gng_doUtility", curmodel === "GNG-U");
+            Par.set("freezeStructure", false);
             break;
         case "NG":
         case "NG-CHL":
@@ -581,12 +611,12 @@ function resetFun(from) {
         case "SOM":
             loop = loopSOM;
             VBNN.prototype.adapt = VBNN.prototype.adaptSOM;
-            netsize = glob.som_n_1*glob.som_n_2;
+            netsize = glob.som_n_1 * glob.som_n_2;
             break;
         case "GG":
             loop = loopGG;
             VBNN.prototype.adapt = VBNN.prototype.adaptGG;
-            netsize = glob.gg_n_1*glob.gg_n_2;
+            netsize = glob.gg_n_1 * glob.gg_n_2;
             break;
         case "HCL":
             loop = loopHCL;
@@ -607,9 +637,9 @@ function resetFun(from) {
             LogPar.pars.lbg_doUtility.set(curmodel === "LBG-U");
             break;
         default:
-            loop = function(){;};
+            loop = function () { };
             VBNN.prototype.adapt = VBNN.prototype.adaptGNG;
-                    }
+    }
     //console.log("reset! Model = " + curmodel + "   netsize = " + netsize);
     // create the model object
     noOfRecentSignals = 0;
@@ -618,15 +648,16 @@ function resetFun(from) {
     //
     // remove 3D objets
     //
-    if(nn) {
-        for (var e in nn.edges) {
+    if (nn) {
+        var e,i;
+        for (e in nn.edges) {
             nn.edges[e].vanish();
         }
-        for (var i = 0;i<glob3D.cubes.length;i++) {
+        for (i = 0; i < glob3D.cubes.length; i++) {
             glob3D.scene.remove(glob3D.cubes[i]);
         }
     }
-    glob3D.cubes=[];
+    glob3D.cubes = [];
     nn = new VBNN(curmodel, netsize);
     M3D.reset();
     M3D.signalsNeedsUpdate();
@@ -639,27 +670,29 @@ function resetFun(from) {
 //
 // create a discrete dat set from the PD
 //
-var prev3D=-1;
+var prev3D = -1;
+
 function init_discrete_set(caller) {
     // initialize discrete data set
     //cl("init_discrete_set, Caller:"+caller)
     //cl("prev_curpd: "+ prev_curpd);
     //cl("glob.prev_discrete_num:"+glob.prev_discrete_num);
-    if (glob.discrete_num != glob.prev_discrete_num ||
-        curpd != prev_curpd || prev3D != glob._3DV) {
+    if (glob.discrete_num !== glob.prev_discrete_num ||
+        curpd !== prev_curpd || prev3D !== glob._3DV) {
         prev3D = glob._3DV;
         prev_curpd = curpd;
         glob.prev_discrete_num = glob.discrete_num;
         discrete_set = [];
         M3D.clearSignals();
-        for (var i = 0; i < glob.discrete_num;i++){
+        var i;
+        for (i = 0; i < glob.discrete_num; i++) {
             var x = new Vector();
             getSignalFromPD(x);
             x.sigbmu = ""; // Variable needed to determine LBG convergence
             discrete_set.push(x);
             //M3D.setSignal(x);
         }
-        cl("sigi = "+sigi);
+        cl("sigi = " + sigi);
         M3D.signalsNeedsUpdate();
     } else {
         //cl("init_discrete_set(): same same");
@@ -670,7 +703,7 @@ function stopFun() {
     //cl("StopFun, doing my thing ....");
     // set play icon
     if (ui) {
-        $(".startButton").button( "option", "label", '<i class="fa fa-play"></i> start');
+        $(".startButton").button("option", "label", '<i class="fa fa-play"></i> start');
         $(".startButton").button("enable");
         // bind to startFun()
         $(".startButton").unbind().click(startFun);
@@ -682,17 +715,20 @@ function stopAndMaybeRestart() {
     stopFun();
     if (getCheckBoxState("showAutoRestart")) {
         // auto-restart
-        if(ui) {
+        if (ui) {
             $("#showSingleStep").button("disable");
         }
         clearTimeout(myTimeout);
         // shortly wait, then change PD and restart
-        if(nn.model==="LBG-U") {
+        if (nn.model === "LBG-U") {
             var wait = 3000;
         } else {
             wait = 3000;
         }
-        myTimeout = setTimeout(function() { nextPD();restartFun()}, wait);
+        myTimeout = setTimeout(function () {
+            nextPD();
+            restartFun();
+        }, wait);
     } else if (glob.singleStepMode) {
         // single-step
         $("#showSingleStep").trigger("click");
@@ -703,14 +739,14 @@ function stopAndMaybeRestart() {
     }
 }
 
-function haltDemo () {
+function haltDemo() {
     if (ui) {
-        $(".demoButton").button( "option", "label", '<i class="fa fa-smile-o fa-1x"></i> demo');
+        $(".demoButton").button("option", "label", '<i class="fa fa-smile-o fa-1x"></i> demo');
     }
     shouldStopDemo = true;
     glob.demoRunning = false;
     redraw();
-    $(".demoButton").unbind('click').click(runDemo);// bind button to runDemo
+    $(".demoButton").unbind('click').click(runDemo); // bind button to runDemo
     stopFun();
     if (ui) {
         $("#showAutoRestart").button("enable");
@@ -727,14 +763,14 @@ function terminateDemo() {
 
 function terminateAutoRestart() {
     // finish auto restart (only need of active)
-    if($("#showAutoRestart").prop('checked')) {
+    if ($("#showAutoRestart").prop('checked')) {
         $("#showAutoRestart").trigger("click");
     }
 }
 
 function terminateSingleStep() {
     // finish auto restart (only need of active)
-    if($("#showSingleStep").prop('checked')) {
+    if ($("#showSingleStep").prop('checked')) {
         $("#showSingleStep").trigger("click");
     }
 }
@@ -752,29 +788,31 @@ function startFun(from) {
     //from="[["+startFun.caller.name+"]]";
     //cl("## startFun(): called from: " + from);
     if (glob.showStats) {
-        flashN(2,"",40,0.01,0.1);
+        flashN(2, "", 40, 0.01, 0.1);
     }
 
     if (nn && nn.converged) {
         // a converged model can not be continued, thus a restart
-        cl("startFun(): converged ==> restart "+curmodel);
+        cl("startFun(): converged ==> restart " + curmodel);
         restartFun();
         //resetFun();
     }
     nn.draw();
     if (ui) {
         // set pause icon
-        $(".startButton").button( "option", "label", '<i class="fa fa-pause"></i> stop');
+        $(".startButton").button("option", "label", '<i class="fa fa-pause"></i> stop');
         // bind to stopFun()
         $(".startButton").unbind().click(terminateModes).click(redraw).click(stopFun);
     }
     glob.shouldStop = false;
     glob.running = true;
     if (glob.alwaysTimeOut || getCheckBoxState("showAutoRestart")) {
-        countDown(glob.autoRestartTime*1000);
+        countDown(glob.autoRestartTime * 1000);
         clearTimeout(myTimeout); // delete any active timeout
         // set new timeout after 4 secs ....
-        myTimeout = setTimeout(function() { stopAndMaybeRestart()}, glob.autoRestartTime*1000); //forceStop in startFun()
+        myTimeout = setTimeout(function () {
+            stopAndMaybeRestart();
+        }, glob.autoRestartTime * 1000); //forceStop in startFun()
     }
     cl("enter animationLoop() ...");
     animationLoop();
@@ -797,7 +835,7 @@ function snapshot() {
     }
 }
 
-$("#mycanvas").bind('mousewheel  DOMMouseScroll', wheelFun );
+$("#mycanvas").bind('mousewheel  DOMMouseScroll', wheelFun);
 
 //$(window).contextmenu(function() {console.log("context"); });
 
@@ -805,12 +843,12 @@ $("#mycanvas").bind('mousewheel  DOMMouseScroll', wheelFun );
 function killGrabbedNode() {
     if (glob.grabbedNode) {
         var i;
-        for (i in glob.grabbedNode.neighbors){
+        for (i in glob.grabbedNode.neighbors) {
             glob.grabbedNode.neighbors[i].restore();
         }
-        cl("Kill! "+glob.grabbedNode.id);
+        cl("Kill! " + glob.grabbedNode.id);
         nn.removeNode(glob.grabbedNode);
-        glob.grabbedNode=undefined;
+        glob.grabbedNode = undefined;
         glob.isgrabbing = false;
         //showNoOfEdges();
         //showNoOfNodes(); // killGrabbed
@@ -841,69 +879,69 @@ var demoSeq = [
         distribution: "UnitSquare",
         showVoronoi: false,
         speed: 5,
-        duration: 8,
+        duration: 8
     },
     {
         model: "NG-CHL",
         distribution: "Circle",
         showVoronoi: false,
         speed: 5,
-        duration: 8,
+        duration: 8
     },
     {
         call: "stopFun",
         initFromPD: false,
         speed: 6,
-        duration: 0,
+        duration: 0
     },
     {
         model: "GNG",
         //distribution: "Circle",
         showVoronoi: true,
-        duration: 6,
+        duration: 6
     },
     {
         distribution: "Corners",
-        duration: 6,
+        duration: 6
     },
     {
         model: "GNG-U",
         duration: 6,
-        initFromPD: true,
+        initFromPD: true
     },
     {
         model: "HCL",
         distribution: "Line",
         showVoronoi: true,
         speed: 8,
-        duration: 6,
+        duration: 6
     },
     {
         model: "GG",
         distribution: "Clusters",
         showVoronoi: false,
-        duration: 6,
+        duration: 6
     },
     {
         call: "stopFun",
-        duration: 0,
+        duration: 0
     },
     {
         distribution: "123-D",
-        duration: 1,
+        duration: 1
     },
     {
         call: "resetFun",
         gg_n_1_max: 2,
         speed: 3,
-        duration: 1,
+        duration: 1
     },
     {
-        call: "startFun",
+        call: "startFun"
     },
     {
         distribution: "UnitSquare",
-        gg_n_1_max: 100,
+        gg_n_1_max: 100
     },
     {
         model: "SOM",
@@ -911,45 +949,45 @@ var demoSeq = [
         som_displayFields: true,
         showVoronoi: false,
         speed: 6,
-        duration: 6,
+        duration: 6
     },
     {
         model: "GNG",
-        distribution: "Cloud",
+        distribution: "Cloud"
     },
     {
         model: "LBG",
-        distribution: "2Squares",
+        distribution: "2Squares"
     },
     {
-        model: "LBG-U",
+        model: "LBG-U"
         //distribution: "Cloud",
     },
     {
         model: "GNG-U",
         distribution: "2Squares",
-        speed: 3,
+        speed: 3
     },
     {
-        call: "nextPD",
+        call: "nextPD"
     },
     {
-        call: "nextPD",
+        call: "nextPD"
     },
     {
-        call: "nextPD",
+        call: "nextPD"
     },
     {
-        call: "nextPD",
+        call: "nextPD"
     },
     {
-        call: "nextPD",
+        call: "nextPD"
     },
     {
         call: "nextPD",
         speed: 8,
-    },
-]
+    }
+];
 
 function demoFun(n) {
     glob.demoRunning = true;
@@ -959,31 +997,34 @@ function demoFun(n) {
         redraw();
         return;
     }
-    cl("demo n = "+n);
-    cd (demoSeq[n]);
+    cl("demo n = " + n);
+    cd(demoSeq[n]);
     var t = 3000; // standard time
-    for (var key in demoSeq[n]) {
-        if (key==="model") continue; // ignore model here
+    var key;
+    for (key in demoSeq[n]) {
+        if (key === "model") continue; // ignore model here
         var val = demoSeq[n][key];
         if (key === "duration") {
-            t = val*1000; // custom time
+            t = val * 1000; // custom time
         } else if (key === "call") {
             window[val]();
         } else {
-            Par.set(key,val);
+            Par.set(key, val);
         }
     }
     // set model as last paramter to keep flash message up
-    if ("model" in demoSeq[n]){
-        Par.set("model",demoSeq[n]["model"]);
+    if ("model" in demoSeq[n]) {
+        Par.set("model", demoSeq[n]["model"]);
     }
     clearTimeout(myTimeout);
-    myTimeout = setTimeout(function() { demoFun((n+1)%demoSeq.length)}, t); // demo
+    myTimeout = setTimeout(function () {
+        demoFun((n + 1) % demoSeq.length);
+    }, t); // demo
 }
 
 // my logging
 function ml(txt) {
-    $( "#log" ).html( "<div>" + txt + "</div><br>" );
+    $("#log").html("<div>" + txt + "</div><br>");
 }
 
 /*
@@ -1004,23 +1045,24 @@ function timeStamp() {
     var now = new Date();
 
     // Create an array with the current month, day and time
-    var date = [ now.getMonth() + 1, now.getDate(), now.getFullYear() ];
+    var date = [now.getMonth() + 1, now.getDate(), now.getFullYear()];
 
     // Create an array with the current hour, minute and second
-    var time = [ now.getHours(), now.getMinutes(), now.getSeconds() ];
+    var time = [now.getHours(), now.getMinutes(), now.getSeconds()];
 
     // Determine AM or PM suffix based on the hour
-    var suffix = ( time[0] < 12 ) ? "AM" : "PM";
+    var suffix = (time[0] < 12) ? "AM" : "PM";
 
     // Convert hour from military time
-    time[0] = ( time[0] < 12 ) ? time[0] : time[0] - 12;
+    time[0] = (time[0] < 12) ? time[0] : time[0] - 12;
 
     // If hour is 0, set it to 12
     time[0] = time[0] || 12;
 
     // If seconds and minutes are less than 10, add a zero
-    for ( var i = 1; i < 3; i++ ) {
-        if ( time[i] < 10 ) {
+    var i;
+    for (i = 1; i < 3; i++) {
+        if (time[i] < 10) {
             time[i] = "0" + time[i];
         }
     }
@@ -1031,27 +1073,28 @@ function timeStamp() {
 
 function getRandomIndex(n) { // from 0 to n-1
     return Math.floor(Math.random() * n);
-} 
+}
 //
 // convert pd to a list of fields
 // from condensed description
 //
 function computeFieldList(name) {
     var a = [];
-    var p = pds[name]
-    var f = 1.0/p.n; //scaling to unit square
-    for (var i in p.fields) { // y
+    var p = pds[name];
+    var f = 1.0 / p.n; //scaling to unit square
+    var i,j;
+    for (i in p.fields) { // y
         // "*" is interpreted a s full lline
-        if (p.fields[i][0]==="*"){
-            for (j=0;j<p.n;j++){
-                a.push([j*f,i*f]);
+        if (p.fields[i][0] === "*") {
+            for (j = 0; j < p.n; j++) {
+                a.push([j * f, i * f]);
             }
         } else {
             // every number is interpreted as on block among [0 .. p.n]
-            for (var j in p.fields[i]) { // x
+            for (j in p.fields[i]) { // x
                 //cl("field "+i+ "   " + p.fields[i][j]);
-                var z = getRandomInt(0, p.n-1);
-                a.push([p.fields[i][j]*f,i*f,z*f]);
+                var z = getRandomInt(0, p.n - 1);
+                a.push([p.fields[i][j] * f, i * f, z * f]);
                 //a.push([p.fields[i][j]*f,i*f]);
             }
         }
@@ -1063,19 +1106,22 @@ function computeFieldList(name) {
 function computeOutline(name) {
     var p = pds[name];
     var a = p.rawdata;
-    function B(x,y){
-        return a[y].charAt(x)==='#';
+
+    function B(x, y) {
+        return a[y].charAt(x) === '#';
     }
-    function W(x,y){
-        return a[y].charAt(x)==='.';
+
+    function W(x, y) {
+        return a[y].charAt(x) === '.';
     }
     p.n = a.length;
     var n = p.n;
-    var f = 1.0/p.n; //scaling to unit square
-    for (var i = 0;i< p.n;i++) {
-        if (a[i].lastIndexOf("#")>0){
-            var xstart=a[i].lastIndexOf("#");
-            var ystart=i;
+    var f = 1.0 / p.n; //scaling to unit square
+    var i;
+    for (i = 0; i < p.n; i++) {
+        if (a[i].lastIndexOf("#") > 0) {
+            var xstart = a[i].lastIndexOf("#");
+            var ystart = i;
             break;
         }
     }
@@ -1083,49 +1129,58 @@ function computeOutline(name) {
     var x = xstart;
     var y = ystart;
     var curDir = "";
-    var x0=x; // start of current segment
-    var y0=y; // start of current segment
+    var x0 = x; // start of current segment
+    var y0 = y; // start of current segment
     var O = [];
-    O.push({x:x*f+f,y:y*f+f});
+    O.push({
+        x: x * f + f,
+        y: y * f + f
+    });
     do {
         //cl(B(x,y));
-        var dx=0;
-        var dy=0;
-        if (B(x,y) && (x===n-1 || W(x+1,y))) {
+        var dx = 0;
+        var dy = 0;
+        if (B(x, y) && (x === n - 1 || W(x + 1, y))) {
             var D = "^"; //north
-            dy=-1;
-        } else if (W(x,y) && (y===n-1 || B(x,y+1))) {
+            dy = -1;
+        } else if (W(x, y) && (y === n - 1 || B(x, y + 1))) {
             D = "<"; // west
-            dx=-1;
-        } else if ((y<n-1 && x<n-1)&&(W(x,y+1) && B(x+1,y+1))) {
+            dx = -1;
+        } else if ((y < n - 1 && x < n - 1) && (W(x, y + 1) && B(x + 1, y + 1))) {
             D = "V"; // south
-            dy=1;
-        } else if ((x<n-1)&&(B(x+1,y) && (y===n-1 || W(x+1,y+1)))) {
+            dy = 1;
+        } else if ((x < n - 1) && (B(x + 1, y) && (y === n - 1 || W(x + 1, y + 1)))) {
             D = ">"; // east
-            dx=1;
+            dx = 1;
         }
         //cl("D="+D+"   curDir="+curDir);
         if (curDir === "" || curDir === D) {
             // first run or continuationof same direction
-            x+=dx;
-            y+=dy;
+            x += dx;
+            y += dy;
             //var x1 = x;
             //var y1 = y;
-            curDir=D;
+            curDir = D;
         } else {
             // direction changed
             //cl(curDir + "segment from "+x0+","+y0+"  to   "+x+","+y);
-            O.push({x:x*f+f,y:y*f+f});
-            x0=x;
-            y0=y;
-            x+=dx;
-            y+=dy;
-            curDir=D;
+            O.push({
+                x: x * f + f,
+                y: y * f + f
+            });
+            x0 = x;
+            y0 = y;
+            x += dx;
+            y += dy;
+            curDir = D;
         }
         //cl(D + " x="+x+" y="+y);
     } while (x != xstart || y != ystart);
     //cl(curDir + "segment from "+x0+","+y0+"  to   "+x+","+y);
-    O.push({x:x*f+f,y:y*f+f});
+    O.push({
+        x: x * f + f,
+        y: y * f + f
+    });
     p.outline = O;
     //cl("done");
 }
@@ -1144,13 +1199,14 @@ function computeFieldList2(name) {
     var a = [];
     var p = pds[name];
     p.n = p.rawdata.length;
-    var f = 1.0/p.n; //scaling to unit square
-    for (var i = 0;i< p.n;i++) {
-        var L = p.rawdata[i]; // current line
-        for (var j=0; j<L.length;j++){
-            if (L.charAt(j)==='#') {
-                var z = getRandomInt(0, p.n-1);
-                a.push([j*f,i*f,z*f]);
+    var f = 1.0 / p.n; //scaling to unit square
+    var i,j,L;
+    for (i = 0; i < p.n; i++) {
+        L = p.rawdata[i]; // current line
+        for (j = 0; j < L.length; j++) {
+            if (L.charAt(j) === '#') {
+                var z = getRandomInt(0, p.n - 1);
+                a.push([j * f, i * f, z * f]);
             }
         }
     }
@@ -1158,6 +1214,7 @@ function computeFieldList2(name) {
     p.xy = a;
     //cd(a);
 }
+
 function resetO() {
     glob.oChange = 0;
 }
@@ -1194,7 +1251,7 @@ function stripe(x) {
 ---------------------------
 */
 function nextTouchHelp() {
-    glob.touchHelpPage = (glob.touchHelpPage+1)%3;
+    glob.touchHelpPage = (glob.touchHelpPage + 1) % 3;
     redraw();
 }
 
@@ -1202,72 +1259,91 @@ function nextTouchHelp() {
 var magic = {
     "viewmode": {
         n: 0,
-        v: new Vector(0.1,0.1),
-        f: toggleViewMode,
+        v: new Vector(0.1, 0.1),
+        f: toggleViewMode
     },
     "demo": {
         n: 1,
-        v: new Vector(0.9,0.9),
-        f: function() { 	if (shouldStopDemo) {
-            runDemo();
-        } else {
-            haltDemo();
+        v: new Vector(0.9, 0.9),
+        f: function () {
+            if (shouldStopDemo) {
+                runDemo();
+            } else {
+                haltDemo();
+            }
         }
-                      },
 
     },
     "signals": {
         n: 2,
-        v: new Vector(0.1,0.7),
-        f: function() {$("#showSignals").trigger("click")},
+        v: new Vector(0.1, 0.7),
+        f: function () {
+            $("#showSignals").trigger("click");
+        }
     },
     "Voronoi": {
-        n:3,
-        v: new Vector(0.1,0.9),
-        f: function() {$("#showVoronoi").trigger("click")},
+        n: 3,
+        v: new Vector(0.1, 0.9),
+        f: function () {
+            $("#showVoronoi").trigger("click");
+        }
     },
     "(next page)": {
-        n:3,
-        v: new Vector(0.5,0.9),
-        f: function() {nextTouchHelp()},
+        n: 3,
+        v: new Vector(0.5, 0.9),
+        f: function () {
+            nextTouchHelp();
+        }
     },
     "nodes": {
-        n:4,
-        v: new Vector(0.1,0.3),
-        f: function() {$("#showNodes").trigger("click")},
+        n: 4,
+        v: new Vector(0.1, 0.3),
+        f: function () {
+            $("#showNodes").trigger("click");
+        }
     },
     "edges": {
-        n:5,
-        v: new Vector(0.1,0.5),
-        f: function() {$("#showEdges").trigger("click")},
+        n: 5,
+        v: new Vector(0.1, 0.5),
+        f: function () {
+            $("#showEdges").trigger("click");
+        }
     },
     "autorestart": {
-        n:6,
-        v: new Vector(0.5,0.1),
-        f: function() {$("#showAutoRestart").trigger("click")},
+        n: 6,
+        v: new Vector(0.5, 0.1),
+        f: function () {
+            $("#showAutoRestart").trigger("click");
+        }
     },
     "(dismiss)": {
-        n:7,
-        v: new Vector(0.9,0.5),
-        f: function() {
+        n: 7,
+        v: new Vector(0.9, 0.5),
+        f: function () {
             glob.showTouchHelp = !glob.showTouchHelp;
             redraw();
-        },
+        }
     },
     "single-step": {
-        n:8,
-        v: new Vector(0.9,0.1),
-        f: function() {$("#showSingleStep").trigger("click")},
+        n: 8,
+        v: new Vector(0.9, 0.1),
+        f: function () {
+            $("#showSingleStep").trigger("click");
+        }
     },
     "stats": {
-        n:9,
-        v: new Vector(0.9,0.3),
-        f: function() {$("#showStats").trigger("click")},
+        n: 9,
+        v: new Vector(0.9, 0.3),
+        f: function () {
+            $("#showStats").trigger("click");
+        }
     },
     "rotate": {
-        n:9,
-        v: new Vector(0.9,0.7),
-        f: function() {$("#showRotate").trigger("click")},
+        n: 9,
+        v: new Vector(0.9, 0.7),
+        f: function () {
+            $("#showRotate").trigger("click");
+        }
     },
 }
 
@@ -1279,20 +1355,21 @@ function toggleViewMode() {
         case "embedded":
             setViewMode("desktop");
             break;
-                         }
+    }
 }
 
 //
 //
 //
 var timeouts = [];
-function flashN(n,txt,msecs,x,y) {
+
+function flashN(n, txt, msecs, x, y) {
     msecs = typeof msecs === 'undefined' ? 1000 : msecs;
     x = typeof x === 'undefined' ? 0 : x;
     y = typeof y === 'undefined' ? 0 : y;
     if (glob.showCanvasMessages) {
         clearTimeout(timeouts[n]);
-        if(glob._3DV) {
+        if (glob._3DV) {
             var pp = $("#div3d").position();
             var he = $("#div3d").height();
         } else {
@@ -1300,32 +1377,36 @@ function flashN(n,txt,msecs,x,y) {
             var he = $("#mycanvas").height();
         }
 
-        var fs = Math.round(Math.max(div3D.height/25,17)); // fontsize
-        var divname = "#flashdiv"+n;
+        var fs = Math.round(Math.max(div3D.height / 25, 17)); // fontsize
+        var divname = "#flashdiv" + n;
         var div = $(divname);
-        div.css("top",pp.top+y*he+0);
-        div.css("left",pp.left+x*he);
-        div.css("font-size",fs+"px");
+        div.css("top", pp.top + y * he + 0);
+        div.css("left", pp.left + x * he);
+        div.css("font-size", fs + "px");
         div.html(txt);
         div.show();
-        timeouts[n] = setTimeout(function() { div.hide();}, msecs);
+        timeouts[n] = setTimeout(function () {
+            div.hide();
+        }, msecs);
     }
 }
+
 function flashHide(n) {
     if (glob.showCanvasMessages) {
         clearTimeout(timeouts[n]);
-        var divname = "#flashdiv"+n;
+        var divname = "#flashdiv" + n;
         var div = $(divname);
         div.hide();
     }
 }
-function flashsmall(n,txt,msecs,x,y) {
+
+function flashsmall(n, txt, msecs, x, y) {
     msecs = typeof msecs === 'undefined' ? 1000 : msecs;
     x = typeof x === 'undefined' ? 0 : x;
     y = typeof y === 'undefined' ? 0 : y;
     if (glob.showCanvasMessages) {
         clearTimeout(timeouts[n]);
-        if(glob._3DV) {
+        if (glob._3DV) {
             var pp = $("#div3d").position();
             var he = $("#div3d").height();
         } else {
@@ -1333,22 +1414,24 @@ function flashsmall(n,txt,msecs,x,y) {
             var he = $("#mycanvas").height();
         }
 
-        var fs = Math.round(Math.max(he/40,15)); // fontsize
-        var divname = "#flashdiv"+n;
+        var fs = Math.round(Math.max(he / 40, 15)); // fontsize
+        var divname = "#flashdiv" + n;
         var div = $(divname);
         //div.css("top",pp.top+y*he+0);
-        div.css("bottom","5px");
-        div.css("left",pp.left+x*he);
-        div.css("font-size",/*fs+*/"15px");
-        div.css("font-family","monospace");
-        div.css("height",fs+"px");
+        div.css("bottom", "5px");
+        div.css("left", pp.left + x * he);
+        div.css("font-size", /*fs+*/ "15px");
+        div.css("font-family", "monospace");
+        div.css("height", fs + "px");
 
-        div.html("<pre class='inline'>"+txt+"</pre>");
+        div.html("<pre class='inline'>" + txt + "</pre>");
         //div.html(txt);
         div.show();
         if (msecs > 0) {
             // autohide
-            timeouts[n] = setTimeout(function() { div.hide();}, msecs);
+            timeouts[n] = setTimeout(function () {
+                div.hide();
+            }, msecs);
         }
     }
 }
@@ -1357,8 +1440,11 @@ function flashsmall(n,txt,msecs,x,y) {
 function getCanvasCoords() {
     var offset = $("#mycanvas").offset();
     var posY = offset.top - $(window).scrollTop();
-    var posX = offset.left - $(window).scrollLeft(); 
-    return {x: posX, y:posY};
+    var posX = offset.left - $(window).scrollLeft();
+    return {
+        x: posX,
+        y: posY
+    };
 }
 
 /*
