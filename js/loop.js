@@ -656,3 +656,20 @@ function loopGG() {
     }
     noOfRecentSignals = Math.min(maxSignalsDrawn, i);
 }
+
+function loopITM() {
+	var nSignals = loopSize();
+	for (var i=0;i<nSignals;i++) {
+		// get new signal
+		signalsPresented += 1;
+		getSignalFromPD(signal);
+
+		// adapt
+		nn.adapt(signal);
+		// remember signal in case we need to draw it
+		if (i < maxSignalsDrawn) {
+			sigStore[i].copyFrom(signal);
+		}
+	}
+	noOfRecentSignals = Math.min(maxSignalsDrawn, i);
+}

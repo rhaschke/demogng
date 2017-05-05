@@ -601,6 +601,13 @@ function resetFun(from) {
             Par.set("gng_doUtility", curmodel === "GNG-U");
             Par.set("freezeStructure", false);
             break;
+        case "ITM":
+            $("#showEdges").show();
+            loop = loopITM;
+            VBNN.prototype.adapt = VBNN.prototype.adaptITM;
+            netsize = 2;
+            Par.set("freezeStructure", false);
+            break;
         case "NG":
         case "NG-CHL":
             loop = loopNG;

@@ -31,6 +31,12 @@ function resetIfGNG() {
     }
 }
 
+function resetIfITM() {
+    if (curmodel === "ITM") {
+        resetFun(curmodel);
+    }
+}
+
 function resetIfCHL() {
     if (curmodel === "CHL") {
         resetFun(curmodel);
@@ -565,6 +571,35 @@ xx = new NumPar({
     fun: "redraw",
     value: 200,
     rem: "factor to steer the size of circles indicating error and utility"
+});
+
+xx = new NumPar({
+    model: "ITM",
+    name: "itm_e_max",
+    min: 0,
+    max: 0.1,
+    step: 0.001,
+    fun: "redraw",
+    value: 0.01,
+    rem: "maximum quantization error"
+});
+xx = new NumPar({
+    model: "ITM",
+    name: "itm_n_max",
+    min: 1,
+    max: MAX_NODES,
+    step: 1,
+    value: Math.min(100, MAX_NODES),
+    rem: "max number of nodes"
+});
+xx = new NumPar({
+    model: "ITM",
+    name: "itm_eps",
+    min: 0,
+    max: 0.1,
+    step: 0.001,
+    value: 0.02,
+    rem: "learning rate for winner (bmu)"
 });
 
 // NG

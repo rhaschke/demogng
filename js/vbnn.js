@@ -75,6 +75,15 @@ VBNN.models = {
         hasEdges: true,
         batch: false
     },
+    "ITM" : {
+        name : "Instantaneous Topological Map",
+        author : "Jockusch + Ritter, 1999",
+        staysAdaptive : true,
+        detlink : "https://ni.www.techfak.uni-bielefeld.de/files/JockuschRitter1999-AIT.pdf",
+        implemented : true,
+        hasEdges : true,
+        batch : false
+    },
     "NG": {
         name: "Neural Gas",
         author: "Martinetz, 1995",
@@ -178,6 +187,9 @@ VBNN.prototype.init = function (size) {
         for (e in this.edges) {
             this.edges[e].vanish();
         }
+    }
+    if (this.model === "ITM") {
+        this.delta2 = new Vector;
     }
 
     this.nodes = {};
@@ -1744,7 +1756,10 @@ VBNN.prototype.findBMU = function (signal) {
         cn = this.nodes[i];
         cv = cn.position;
         // my own sqdist
-        curdist = (cv.x - signal.x) * (cv.x - signal.x) + (cv.y - signal.y) * (cv.y - signal.y) + (cv.z - signal.z) * (cv.z - signal.z);
+        var dx = cv.x - signal.x;
+        var dy = cv.y - signal.y;
+        var dz = cv.z - signal.z;
+        curdist = dx * dx + dy * dy+ dz * dz;
         if (curdist < mindist) {
             //cl("currdist: "+curdist);
             // closest gets new value
@@ -1785,7 +1800,7 @@ VBNN.prototype.findBMU2 = function (signal) {
             }
         }
     }
-    return [bmu, bmu2];
+    return [bmu, bmu2, mindist, min2dist];
 }
 
 function logArrayElements(element, index, array) {
@@ -2193,6 +2208,82 @@ VBNN.prototype.adaptGNG = function (signal, checkUtil) {
         // remove unit with minutil
     }
 }
+VBNN.prototype.adaptITM = function(signal) {
+    // find bmu
+    var result = this.findBMU2(signal);
+    var bmu = result[0]
+    var bmu2 = result[1];
+    var mindist = result[2];
+    var min2dist = result[3];
+
+    var decay = 1 - glob.gng_beta;
+    for (var i in this.nodes) {
+        var cn = this.nodes[i];
+        cn.error *= decay;
+        cn.utility *= decay;
+    } // loop over all nodes
+    glob.mostRecentBMU = bmu;
+
+    // add error
+    bmu.error += mindist; // bmu sometimes undefined!!!
+    // add utility
+    bmu.utility += min2dist - mindist;
+
+    // add edge if not yet present and no freezeStructure set
+    if (bmu2 && !bmu.isNeighborOf(bmu2) && !glob.freezeStructure) {
+        // add new edge between bmu and bmu3
+        this.addEdge(bmu, bmu2);
+    }
+    // adapt bmu
+    this.delta.copyFrom(signal) // delta = \xi
+    .subtract(bmu.position) // delta -= w_bmu
+    .multiplyBy(glob.itm_eps); // delta *= eps
+    bmu.position.add(this.delta); //adapt bmu
+
+    if (false && !glob.freezeStructure) {
+        this.lastInserted = undefined;
+        return;
+    }
+
+    var edgesToRemove = [];
+    this.delta.copyFrom(bmu.position).subtract(bmu2.position)
+    // remove edges to neighbors
+    for (i in bmu.edges) { // if no neighbors this is skipped
+        var ecur = bmu.edges[i];
+        var other = bmu.neighborVia(ecur);
+        this.delta2.copyFrom(other.position).subtract(bmu2.position)
+        if (this.delta.product(this.delta2) < 0 && !ecur.moriturus) {
+            // mark for removal
+            ecur.moriturus = true;
+            // add to removal list
+            edgesToRemove.push(ecur);
+        }
+    }
+    if (edgesToRemove.length > 0 && !glob.freezeStructure) {
+        this.removeEdges(edgesToRemove);
+    }
+
+    // insert new node?
+    this.delta.copyFrom(bmu.position).subtract(signal)
+    this.delta2.copyFrom(bmu2.position).subtract(signal)
+    if (this.delta.product(this.delta2) > 0 &&
+        mindist > glob.itm_e_max &&
+        this.noOfNodes < glob.itm_n_max) {
+        var n = new Node();
+        this.nodes[n.id] = n;
+        this.noOfNodes++;
+        // create new node at signal
+        n.position.copyFrom(signal);
+        n.error = 0;
+        n.utility = 0;
+        this.lastInserted = n;
+        this.addEdge(n, bmu);
+    }
+    if (bmu.position.dist(bmu2.position) < glob.itm_e_max / 2 &&
+        this.noOfNodes > 2)
+        this.removeNode(bmu2);
+}
+
 VBNN.prototype.adaptCHL = function (signal) {
     var x = this.findBMU2(signal);
     var bmu = x[0]
@@ -2372,6 +2463,13 @@ Node.prototype.isNeighborOf = function (n) {
     } else {
         cl("haehh, Node.prototype.isNeighborOf n is not defines .....");
         return false;
+    }
+}
+Node.prototype.neighborVia = function (e) {
+    for (var i in e.nodes) {
+        var n = e.nodes[i]
+        if (n !== this)
+            return n
     }
 }
 
@@ -2582,6 +2680,10 @@ Vector.prototype.rotate = function (angle) {
     this.y = yn + 0.5;
     return this;
 }
+Vector.prototype.product = function (vector) {
+    return this.x*vector.x + this.y*vector.y + this.z*vector.z;
+}
+
 var lastSignal = new Vector
 
 /*

@@ -197,8 +197,8 @@ function setModelTo(newmodel) {
 		resetFun("setModelTo");
 		if (curmodel === "GNG" || curmodel === "GNG-U") {
 			LogPar.pars.gng_doUtility.set(curmodel === "GNG-U");
-            LogPar.pars.gng_delOrphanedNodes.set("GNG" === curmodel);
-        }
+			LogPar.pars.gng_delOrphanedNodes.set("GNG" === curmodel);
+		}
 		M3D.showEdgesFun();
 		M3D.showTraceEdgesFun();
 		if (VBNN.nameIsLBGX(curmodel)) {
