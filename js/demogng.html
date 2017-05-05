@@ -1,0 +1,561 @@
+<!doctype html>
+<!--
+//
+// Copyright 2016-2017 by Bernd Fritzke, All Rights Reserved
+//
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>DemoGNG.js</title>
+ 	
+	  <!--
+	  <script src="http://jsconsole.com/js/remote.js?387095bf-0ad0-477c-93fb-56714a6ec90a"></script>
+	  -->
+	  <!-- <script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script> -->
+	                                             <!-- ba85eca5-89c6-4add-81d5-a774f5ed5073 -->
+
+
+<script>
+	var theStart = Date.now();;
+	function myTime() {
+		var d = (Date.now()-theStart)/1000;
+		var n = d.toFixed(3);
+		return n;
+	}
+	function cl(x){
+		var txt = "cl()"+myTime()+": "+x;
+		console.log(txt);
+		return(txt);
+	}
+	function cd(x,what){
+		var what = what||"???";
+		var txt = "cd()"+myTime()+": "+what+": "+JSON.stringify(x,replacer,4);
+		console.log(txt);
+		return txt;
+	}
+
+	function replacer(key,value){
+		if(key === "event"){
+			return undefined;
+		}
+		return value;
+	}
+	//cl("now the include stuff starts .....");
+	function include(filename,async,id)
+	{
+	   var id = id || "head";
+	   var async = async || false;
+	   cl("include:"+filename);
+	   var parentElem = document.getElementsByTagName(id)[0];
+
+	   var script = document.createElement('script');
+	   script.src = filename;
+	   script.type = 'text/javascript';
+	   if (async) {
+			script.async = true;
+	   }
+
+	   parentElem.appendChild(script)
+	} 
+	
+	function includelink(filename,id)
+	{
+	   cl("includelink:"+filename);
+	   var head = document.getElementsByTagName('head')[0];
+
+	   var script = document.createElement('link');
+	   script.src = filename;
+	   script.rel='stylesheet';
+
+	   head.appendChild(script)
+	} 
+
+	//
+	// obtaining GET parameters x=b or x (=true is assumed in the latter case)
+	//
+	var queryDict = {}
+	function handleGetPar(item) {
+		if (item!="") {
+			if (item.indexOf("=")>=0) {
+				// assignments
+				var parname = item.split("=")[0];
+				var parval  = item.split("=")[1];
+			} else {
+				// simple parameters withou value: assume true
+				parname = item;
+				parval = true;
+			}
+			queryDict[parname] = parval;
+			cl(">>>>>>>>>>>>>>>>>>> param '"+parname+ "' should have value '"+parval/*+ "' Exists:" + Par.exists(parname)*/);
+		}
+	}
+	location.search.substr(1).split("&").forEach(handleGetPar);
+
+	if (queryDict.hasOwnProperty('mini') ) {
+		var mini = true;
+		var ui = false;
+		cl("no mathjax needed");
+	} else {
+		mini = false;
+		ui = true;
+		include("https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_SVG");
+	}
+//alert(JSON.stringify(queryDict,replacer,4));
+</script>
+<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+
+<script> //cl("loading mathjax"); </script>
+<!--
+<script type="text/javascript"
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+-->
+<script> cl("loading jqueryui.css"); </script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/themes/pepper-grinder/jquery-ui.min.css">
+
+<script> //cl("loading jquery.js"); </script>
+<!-- <script src="https://jsconsole.com/js/remote.js?a652f6b6-3eca-4b18-af89-64e1a64b7429"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r81/three.js"></script>
+<script src="3D/libs/stats.min.js"></script>
+<script src="3D/controls/TrackballControls.js"></script>
+<script src="3D/controls/FlyControls.js"></script>
+<script src="3D/OrbitControls.js"></script>
+<script src="3D/balls.js"></script>
+<link rel="stylesheet" href="demogng.css">
+
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+</head>
+
+<!--                         BODY                           -->
+<body>
+<script id="vertexShader" type="x-shader/x-vertex">
+attribute vec3 offset;
+attribute vec4 color;
+varying vec4 vColor;
+varying vec3 vNormal;
+//uniform float sineTime;
+//uniform float time;
+//attribute vec3 offset;
+void main() {
+	vColor = color;
+	vNormal = normalMatrix * vec3(normal);
+	gl_Position = /*((sineTime+1.)/2.0+0.2)*/projectionMatrix *
+				modelViewMatrix *
+				vec4(position*1.0+/*((sineTime+1.)/2.0+0.2)*/offset,1.0);
+}
+</script>
+<script id="fragmentShaderOld" type="x-shader/x-fragment">
+	varying vec4 vColor;
+    varying vec3 vNormal;
+
+	void main() {  
+		//float di = 0.4*dot(vNormal,normalize(vec3(1.,1.,0.)))+0.4*dot(vNormal,normalize(vec3(1.,0.,1.)));
+		float di = 0.4*dot(vNormal,normalize(vec3(-1.,-1.,-1.)));
+		di = di+0.5;
+		vec4 vColor2= vColor*vec4(1.0,1.0,1.,0.2)*di;
+		gl_FragColor = vColor2; //vec4(vec3(1.0,0.0,1.0), 0.5);  // adjust the alpha
+	}
+</script>
+
+<script id="fragmentShader" type="x-shader/x-fragment">
+// same name and type as VS
+varying vec3 vNormal;
+
+void main() {
+
+  // calc the dot product and clamp
+  // 0 -> 1 rather than -1 -> 1
+  vec3 light = vec3(0.5, 0.2, 1.0);
+
+  // ensure it's normalized
+  light = normalize(light)*0.8;
+
+  // calculate the dot product of
+  // the light to the vertex normal
+  float dProd = max(0.0,
+                    dot(vNormal, light));
+
+  // feed into our frag colour
+  gl_FragColor = vec4(dProd-0.2, // R
+                      dProd+0.2, // G
+                      dProd-0.2, // B
+                      1.0);  // A
+
+}
+</script>
+
+<script> cl("begin of body"); </script>
+
+<div id="mrdoob">
+<!-- ############################################
+                    R O O T
+############################################# -->
+<div id="root">
+
+<div class="buttondiv parent2">
+<button id="hideControls" title="switch to embedded mode" class="symbutton onoff"><i class="fa fa-backward"></i></button>
+<span id="apptitle" title="toggle 2D/3D ...">DemoGNG.js <!--&nbsp;-->&nbsp;<span id="titlecopy">&copy; 2016 by B. Fritzke</span></span>
+<button id="showSettings" class="settings symbutton" title="general settings"><i class="fa fa-cog"></i></button>
+<button id="showSettings3D" class="settings symbutton" title="3D settings"><i class="fa fa-cog"></i><i class="fa fa-cube" aria-hidden="true"></i></button>
+<button id="showHelp" class="symbutton" title="Canvas shortcut keys and tips"><i class="fa fa-question-circle"></i></button>
+<a class="backlink" href="../index.html" title="DemoGNG home page"><i class="fa fa-home" aria-hidden="true"></i></a>
+<a class="backlink" href="../manual0.html" title="DemoGNG Manual" target=_blank><i class="fa fa-book" aria-hidden="true"></i></a>&thinsp;
+</div>
+
+<div class="buttondiv ctrl parent2 but1">
+<button  class="startButton startroot symbutton">start</button>
+<button class="resetButton resetroot symbutton">reset</button>
+<button class="restartButton symbutton"><i class="fa fa-refresh"></i> restart</button>
+<button class="demoButton symbutton"><i class="fa fa-smile-o fa-1x"></i> <span class="demotext">demo</span></button>
+<button class="2DButton symbutton">2D&nbsp;<i class="fa  fa-square-o fa-1x"></i></button>
+<button class="3DButton symbutton">3D&nbsp;<i class="fa fa-cube" aria-hidden="true"></i></button>
+</div>
+
+<div  class="buttondiv seldiff">
+<button title="prev. Model" class="pmodel symbutton">&lt;M</button>  
+<select name="model" id="model">
+  <option value="GNG">Growing Neural Gas (Fritzke)</option>
+  <option value="GNG-U">Growing Neural Gas w. Utility (Fritzke)</option>
+  <option value="NG">Neural Gas (Martinetz)</option>
+  <option value="NG-CHL">Neural Gas + CHL (Martinetz)</option>
+  <option value="SOM">Self-Organizing Map (Kohonen)</option>
+  <option value="GG">Growing Grid (Fritzke)</option>
+  <option value="HCL">Hard Competitive Learning</option>
+  <option value="CHL">Competitive Hebbian Learning (Martinetz)</option>
+  <option value="LBG">LBG (Linde, Buzo, Gray)</option>
+  <option value="LBG-U">LBG-U (Fritzke)</option>
+</select>
+<button title="next Model" class="nmodel symbutton">M&gt;</button>
+</div>
+
+<div class="buttondiv seldiff" >
+<button title="prev. Distribution" class="ppd symbutton">&lt;D</button>
+<select name="distributionXXX" id="probDist">
+</select>
+<button title="next Distribution" class="npd symbutton">D&gt;</button>
+</div>
+
+<div  class="buttondiv seldiff"  >
+<button title="decrease speed" class="pspeed symbutton">&lt;Speed</button>  
+<select name="speed" id="speedButton">
+  <option value="0">Speed 0 (minimal)</option>
+  <option value="1">Speed 1 (very low)</option>
+  <option value="2">Speed 2 (low)</option>
+  <option value="3">Speed 3 (medium/low)</option>
+  <option value="4">Speed 4 (medium)</option>
+  <option value="5">Speed 5 (medium/high)</option>
+  <option value="6">Speed 6 (high)</option>
+  <option value="7">Speed 7 (very high)</option>
+  <option value="8">Speed 8 (maximal)</option>
+</select>
+<button title="increase speed" class="nspeed symbutton">Speed&gt;</button>
+</div>
+
+<div id="topstuff">
+<table id="TOPtable">
+</table> 
+</div>
+
+<div class="optionGroup">
+	<label for="showPDs" class="ButtonPDs showPDs picbutton" title="signal distribution" data-par></label> <input type="checkbox" id="showPDs" />
+	<label for="showNodes"         class="ButtonNodes showNodes picbutton"     title="nodes"       data-par></label> <input type="checkbox" id="showNodes" />
+	<label for="showTrace"         class="ButtonTrace showTrace picbutton"     title="motion trace"       data-par></label> <input type="checkbox" id="showTrace" />
+	<label for="showEdges"         class="ButtonEdges showEdges picbutton"     title="edges"       data-par></label> <input type="checkbox" id="showEdges" />
+	<label for="showSignals"       class="ButtonSignals showSignals picbutton" title="input signals"     data-par></label> <input type="checkbox" id="showSignals" />
+	<label for="showVoronoi"       class="ButtonVoronoi showVoronoi picbutton" title="Voronoi diagram"     data-par></label> <input type="checkbox" id="showVoronoi" />
+	<label for="showRotate"        class="ButtonFields showRotate picbutton"   title="constantly rotate probability distribution around canvas center" data-par></label> <input type="checkbox" id="showRotate" />
+	<label for="showAutoRestart"   class="ButtonAutoRestart showAutoRestart picbutton" title="auto-restart with different distribution"  data-par></label> <input type="checkbox" id="showAutoRestart" />
+	<label for="showSingleStep"   class="ButtonSingleStep showSingleStep picbutton" title="single step simulation (delay per step defined in general settings)"  data-par></label> <input type="checkbox" id="showSingleStep" />
+</div>
+<div class="parent2 MM4">
+<button id="RZMX" title="clockwise Z-rotation" onclick="glob['_3DROT_ZM']=true;glob['_3DROT_Z']=false;stamp_z = Date.now();"><i class="fa fa-arrow-left" aria-hidden="true"></i>
+ rotate left</button>
+<button id="RZ0X" title="stop Z-rotation" onclick="glob['_3DROT_Z']=false;glob['_3DROT_ZM']=false;">no rotation</button>
+<button id="RZPX" title="counter-clockwise Z-rotation" onclick="glob['_3DROT_Z']=true;glob['_3DROT_ZM']=false;stamp_z = Date.now();">rotate right <i class="fa fa-arrow-right" aria-hidden="true"></i>
+</button>
+</div>
+
+<script> cl("begin of reference"); </script>
+
+<div id="reference">
+</div>
+<!--
+//
+// GNG
+//
+-->
+<div id="GNG" class="modelparams">
+<table id="GNGtable">
+</table>
+</div> <!-- GNG -->
+
+<!--
+//
+// NG
+//
+-->
+<div id="NG" class="modelparams">
+<table id="NGtable">
+</table>  
+</div> <!-- NG -->
+
+<!--
+//
+// SOM
+//
+-->
+<div id="SOM" class="modelparams">
+<table id="SOMtable">
+</table>
+</div> <!-- SOM -->
+
+<!--
+//
+// GG
+//
+-->
+<div id="GG" class="modelparams">
+<table id="GGtable">
+</table>
+</div>  <!-- GG -->
+
+<!--
+//
+// HCL
+//
+-->
+<div id="HCL" class="modelparams">
+<table id="HCLtable">
+</table>
+</div>  <!-- HCL -->
+
+<!--
+//
+// CHL
+//
+-->
+<div id="CHL" class="modelparams">
+<table id="CHLtable">
+</table>
+<!-- <div id="log">log</div> -->
+</div> <!-- CHL -->
+
+<!--
+//
+// LBG
+//
+-->
+<div id="LBG" class="modelparams">
+<table id="LBGtable">
+</table>
+</div> <!-- LBG -->
+
+<!--
+//
+// LBG-U
+//
+-->
+<div id="LBG-U" class="modelparams">
+<table id="LBG-Utable">
+</table>
+</div> 
+
+<!--
+//
+// hiddenStuff
+//
+-->
+<div id="hiddenWindow">
+hidden parameters and settings
+<table id="HIDDENtable">
+</table>
+</div> <!-- hiddenStuff -->
+</div> <!-- root -->
+  
+<!--
+//
+// Canvas       C A N V A S
+//
+-->
+<div id="graphContainer">
+
+<canvas  id="mycanvas" class="unselectable"></canvas>
+
+<!--
+//
+// three.js        3D
+//
+-->
+
+<div  id="div3d"  tabindex="-1">
+</div>
+
+<div id="div3Hs" title="switch to medium GUI" tabindex="-1">
+&gt;
+</div>
+
+<div id="div3H"  tabindex="-1">
+<div id="OHDbuttons" class="parent">
+<div class="parent2 c0">
+<button id="showguibut" title="switch to desktop mode" onclick="setViewMode('desktop');"><i class="fa fa-forward"></i>
+</button>
+<button id="hideguibut" onclick="setViewMode('embedded');">hide GUI</button>
+<button class="2DButton symbutton">2D&nbsp;<i class="fa  fa-square-o fa-1x"></i></button>
+<button class="3DButton symbutton">3D&nbsp;<i class="fa fa-cube" aria-hidden="true"></i></button>
+</div>
+
+<div class="parent2 c0">
+<button class="startButton startroot symbutton">start</button>
+<button class="resetButton resetroot symbutton">reset</button>
+</div>
+<div class="parent2 c0">
+<button class="restartButton symbutton"><i class="fa fa-refresh"></i> restart</button>
+<button class="demoButton symbutton"><i class="fa fa-smile-o fa-1x"></i> <span class="demotext">demo</span></button>
+</div>
+
+
+<div class="parent2 c0">
+<button title="prev. Model" class="pmodel symbutton">&lt;M</button>
+<button title="next Model" class="nmodel symbutton">M&gt;</button>
+</div>
+
+<div class="parent2 c0">
+<button title="prev. Distribution" class="ppd symbutton">&lt;D</button>
+<button title="next Distribution" class="npd symbutton">D&gt;</button>
+</div>
+
+<div class="parent2 c0">
+<button title="decrease speed" class="pspeed symbutton">&lt;Speed</button>
+<button title="increase speed" class="nspeed symbutton">Speed&gt;</button>
+</div>
+
+<div class="optionGroup parent2 c1">
+	<label for="showPDs" class="ButtonPDs showPDs picbutton" title="display signal distribution" data-par></label> 
+	<label for="showNodes"         class="ButtonNodes showNodes picbutton"     title="display nodes"       data-par></label> 
+	<label for="showTrace"         class="ButtonTrace showTrace picbutton"     title="show motion trace"       data-par></label> 
+</div>
+<div class="optionGroup parent2 c1">
+	<label for="showEdges"         class="ButtonEdges showEdges picbutton"     title="display edges"       data-par></label> 
+	<label for="showSignals"       class="ButtonSignals showSignals picbutton" title="display input signals"     data-par></label> 
+	<label for="showVoronoi"       class="ButtonVoronoi showVoronoi picbutton" title="display Voronoi diagram"     data-par></label> 
+</div>
+<div class="optionGroup parent2 c1">
+	<label for="showRotate"        class="ButtonFields showRotate picbutton"   title="constantly rotate probability distribution around canvas center" data-par></label> 
+	<label for="showAutoRestart"   class="ButtonAutoRestart showAutoRestart picbutton" title="auto-restart with different distribution"  data-par></label> 
+	<label for="showSingleStep"   class="ButtonSingleStep showSingleStep picbutton" title="single step simulation (delay per step defined in general settings)"  data-par></label> 
+</div>
+
+
+<div class="parent2 MM3">
+<button id="RZM" title="clockwise Z-rotation" onclick="glob['_3DROT_ZM']=true;glob['_3DROT_Z']=false;stamp_z = Date.now();">Z+</button>
+<button id="RZ0" title="stop Z-rotation" onclick="glob['_3DROT_Z']=false;glob['_3DROT_ZM']=false;">Z0</button>
+<button id="RZP" title="counter-clockwise Z-rotation" onclick="glob['_3DROT_Z']=true;glob['_3DROT_ZM']=false;stamp_z = Date.now();">Z-</button>
+</div>
+<button id="hideControls2" title="minimize GUI" class="symbutton onoff" onclick="$('#div3H').hide();$('#div3Hs').show().css('display','flex');"><i class="fa fa-backward"></i></button>
+
+</div> <!-- OHDbuttons -->
+
+</div> <!-- div3H -->
+
+
+<div class="flashy" id="flashdiv0"></div>
+<div class="flashy" id="flashdiv1"></div>
+<div class="flashy" id="flashdiv2"></div>
+<div class="flashy" id="flashdiv3"></div>
+<div class="flashy" id="flashdiv4"></div>
+<div class="flashy" id="flashdiv5"></div>
+
+</div> <!-- graphContainer -->
+</div> <!-- mrdoob -->
+
+<!--
+//
+// ads
+//
+-->
+<!--
+<script> cl("begin of ads"); </script>
+
+<div id="ads">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script> cl("begin of ads 2"); </script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-8150569616322175"
+     data-ad-slot="6088585190"
+     data-ad-format="auto"></ins>
+<script> cl("begin of ads 3"); </script>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<script> cl("begin of ads end"); </script>
+</div>
+-->
+<!-- settingsWindow -->
+<div id="settingsWindow">
+<div id="head">General settings<button onclick="doKeyDown('P');" style="float: right;">X</button></div> 
+<table id="OPTtable">
+</table>
+</div>
+<div id="settings3DWindow">
+<div id="head">3D settings<button onclick="$('#settings3DWindow').toggle();" style="float: right;">X</button></div> 
+<table id="OPT3Dtable">
+</table>
+</div>
+<script> cl("begin of help window"); </script>
+
+<!-- keyhelpWindow -->
+<div id="keyhelpWindow">
+<div  class="headclass"> <span><b>Canvas Shortcut Keys</b></span><button id="helpexit" onclick="doKeyDown('H');" style="float: right;">X</button></div>
+<table id="canvaskeys">
+</table>
+<br>
+<div  class="headclass"><b>Mouse Wheel Control</b></div>
+<table id="canvaswheel">
+</table>
+<ul id="tips">
+</ul>
+
+</div> <!-- keyhelpWindow -->
+
+
+<script> cl("loading awsome.css"); </script>
+
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+<script src="rhill-voronoi-core.min.js"></script>
+
+	  <!-- <script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_SVG'></script> -->
+<script> //cl("loading analytics.js"); </script>
+<script src="analytics.js"></script>
+<!--
+<link rel="stylesheet" href="demogng.css">
+-->
+<script> //cl("loading jquery.ui.touch-punch.min.js"); </script>
+<script src="jquery.ui.touch-punch.min.js"></script>
+<script> //cl("loading globvars.js"); </script>
+<script src="globvars.js"></script>
+<script> //cl("loading numPar.js"); </script>
+<script src="numPar.js"></script>
+<script> //cl("loading demogng_slider.js"); </script>
+<script src="demogng_slider.js"></script>
+<script> //cl("loading vbnn.js"); </script>
+<script src="vbnn.js"></script>
+<script> //cl("loading loop.js"); </script>
+<script src="loop.js"></script>
+<script> //cl("loading mouse_key.js"); </script>
+<script src="mouse_key.js"></script>
+<script> //cl("loading set_get.js"); </script>
+<script src="set_get.js"></script>
+<script> //cl("loading emogng.js"); </script>
+<script src="demogng.js"></script>
+<script> //cl("loading ready.js"); </script>
+<script src="ready.js"></script>
+
+<div id="XY"></div>
+<script> cl("done loading ......."); </script>
+</body>
+</html>

@@ -1,0 +1,198 @@
+ <!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
+<style>
+body {
+font-family:Arial, sans-serif;
+text-align: center;
+}
+
+h1 {
+font-size: 24px;
+}
+#aut {
+font-size: 12px;
+}
+iframe {
+	width: 400px;
+	height: 400px;
+	display: inline-block;
+	z-order: -5;
+    overflow:hidden;
+}
+#info { 
+    height: 20px; 
+    position: fixed; 
+    bottom:0%;
+    width:100%; 
+    background-color: #CCCCCC;
+	color: black;	
+    opacity: 1;
+}
+#deifi {
+	width: 800px;
+	text-align: center;
+    margin: 0 auto; 
+
+}
+
+.box1 {
+  display: inline-block;
+  /* background-color: yellow;*/
+	vertical-align: top;
+  /*width: 200px;*/
+  /*height: 100px;*/
+  margin: 0em;
+}
+.box2 {
+  /* display: inline-block;*/
+  background-color: #ddd;
+  width: 150px;
+  height: 70px;
+  margin: 0 0.5em 0.5em 0.5em;
+  text-align: center;
+  /*vertical-align: middle;*/
+  /*line-height:70px; */
+    display: flex;               /* establish flex container */
+    align-items: center;         /* vertically center flex items */
+	border-style: solid;
+	border-width: 1px;
+	border-color: white;
+}
+.box3 {
+  /* background-color: green;*/
+  width: 150px;
+  text-align: center;
+}
+
+#idiv {
+	vertical-align: top;
+  /* background-color: green; */
+}
+.selected {
+	/*background-color: yellow;*/
+    background-color: #aaa;
+	border-color: black;
+}
+.hover {
+	/*background-color: yellow;
+    background-color: #aaa;*/
+	border-color: black;
+}
+
+</style>
+<title>DemoGNG.js</title>
+<script src="js/analytics.js"></script>
+</head>
+<body>
+<script>
+function loadModel(m,obj){
+	
+	console.log("huhu"+obj.id);
+	$(".box2").removeClass("selected");
+	obj.className+=" selected";
+	document.getElementById('miframe').src = "js/demogng.html?model="+m+"&mini&mode=embedded&showAutoRestart&autoRestartTime=20&noads&nonstat";
+	document.getElementById('fullpage').href = "js/demogng.html?model="+m+"&showAutoRestart&autoRestartTime=8";
+}
+function loadModel3(m,obj){
+	
+	console.log("huhu"+obj.id);
+	$(".box2").removeClass("selected");
+	obj.className+=" selected";
+	document.getElementById('miframe').src = "js/demogng.html?model="+m+"&mini&mode=embedded&showAutoRestart&autoRestartTime=20&speed=6&noads&nonstat&_3DV";
+	document.getElementById('fullpage').href = "js/demogng.html?model="+m+"&showAutoRestart&autoRestartTime=8";
+}
+$(function () {
+	$(".box2").hover(function(){$(this).addClass("hover");},function(){$(this).removeClass("hover");});
+});
+</script>
+<script>
+function langi() {
+	console.log(navigator.language);
+	var hi = "";
+	var expl = "";
+	switch (navigator.language) {
+	case "de": 
+	case "de-DE": 
+	    here_is_a = "Hier ist eine";
+		fullpage = "Vollbildversion des Simulators";
+		and_a = "und ein";
+		manual = "Handbuch";
+	    by = "von";
+		hi = "Viel Spass!";
+		expl = "Javascript-Simulator f&uuml;r Verfahren des Wettbewerbslernens und selbstorganisierende neuronale Netzwerke";
+	break;
+	case "fr":
+	case "fr-fr":
+	    here_is_a = "Voici une";
+		fullpage = "version pleine page du simulateur";
+		and_a = "et un";
+		manual = "manuel";
+	    by="par";
+		hi="J'espère que vous apprécierez!"
+		expl = "Simulateur Javascript pour des m&eacute;thodes d'apprentissage comp&eacute;titifs et les r&eacute;seaux de neurones auto-organisation"; // tres longue, le Francais!!!! :-)
+		
+	break;
+	default:
+	    here_is_a = "Here is a";
+		fullpage = "full-page version of the simulator";
+		and_a = "and a";
+		manual = "manual";
+	    by = "by";
+		hi = "have fun!";
+		expl="Javascript simulator for competitive learning methods and self-organizing neural networks";
+	break;
+	}
+	console.log(hi);
+	console.log(expl);
+	document.getElementById("deifi").innerHTML = expl;
+	document.getElementById("by").innerHTML = by;
+	document.getElementById("hereis").innerHTML = here_is_a;
+	document.getElementById("fullpage").innerHTML = fullpage;
+	document.getElementById("anda").innerHTML = and_a;
+	document.getElementById("manual").innerHTML = manual;
+}
+//$(document).ready(langi);
+</script>
+<h1>DemoGNG.js</h1>
+<div id="auth"><span id="by">by</span> Dr. Bernd Fritzke (<a href="mailto:fritzke@web.de?subject=demogng">fritzke@web.de</a>)</div>
+<br>
+<div id="deifi">Simulator 
+for <em>competitive learning methods</em> and <em>self-organizing neural networks</em><br>
+</div>
+
+
+<br>
+<div>
+
+</div>
+<div id="idiv">
+<div class="box1">
+<div class="box2" onclick="loadModel3('GNG',this)"><div class="box3">Growing Neural Gas</div></div>
+<div class="box2 selected" onclick="loadModel3('GNG-U',this)"><div class="box3">Growing Neural Gas with Utility</div></div>
+<div class="box2" onclick="loadModel3('NG',this)"><div class="box3">Neural Gas</div></div>
+<div class="box2" onclick="loadModel3('NG-CHL',this)"><div class="box3">Neural Gas + Competitive Hebbian Learning</div></div>
+<div class="box2" onclick="loadModel3('HCL',this)"><div class="box3">Hard Competitive Learning</div></div>
+</div>
+<iframe id="miframe" src="js/demogng.html?mini&mode=embedded&showAutoRestart&autoRestartTime=8&noads&showRotate&_3DV"> </iframe>
+<div class="box1">
+<div class="box2" onclick="loadModel3('SOM',this)"><div class="box3">Self-Organizing Map</div></div>
+<div class="box2" onclick="loadModel3('GG',this)"><div class="box3">Growing Grid</div></div>
+<div class="box2" onclick="loadModel3('CHL',this)"><div class="box3">Competitive Hebbian Learning</div></div>
+<div class="box2" onclick="loadModel('LBG',this)"><div class="box3">LBG</div></div>
+<div class="box2" onclick="loadModel('LBG-U',this)"><div class="box3">LBG with Utility</div></div>
+</div>
+</div>
+<div id="info">
+<span style="float: left;"><a href="about.html">About</a></span><a href="Impressum.html">Impressum</a>
+</div>
+
+<div>
+<br>
+<span id="hereis"></span> <a id="fullpage" href="js/demogng.html?_3DV"><span id="fullpage">full-page simulator</span></a><span id="anda">, </span> <a href="manual0.html" target="_blank"><span id="manual">manual</span></a>.
+</div>
+</body>
+</html> 
+

@@ -1,0 +1,530 @@
+/*
+ * Copyright 2016-2017 by Bernd Fritzke, All Rights Reserved
+ *
+ * some CSS stuff for demogng.js
+ *
+ */
+body {
+ 		/* background-color:#f88; */
+		padding: 0px 0px 0px 0px;
+		margin: 0px 0px 0px 0px;
+}
+#root {
+	position: relative;
+	display: none; /* inline-block; */
+	width: 480px;
+	/* background-color: #0f0; */
+	background-color: #ccc;
+	border: 1px solid #888;
+	margin: 0px;
+}
+
+.H3D {
+	display: table-row;
+}
+.H2D {
+	display: table-row;
+}
+
+
+
+#ads {
+  float: right; 
+  /* background-color: green;*/
+  
+  width: 200px;
+  height: 600px;
+ 
+  /*overflow: hidden;*/
+}
+
+.buttondiv {
+	display: flex;
+	justify-content: space-between;
+	margin: 3px 2px;
+}
+.seldiff button, .seldiff select {
+	flex-grow: 1;
+}
+.startButton {
+	width: 65px;
+}
+
+#apptitle {
+	background-color:#666666;
+	color:#DDDDDD;
+	font-family:Arial, sans-serif;
+	font-size:18px;
+    padding: .2em .5em;
+	display:inline-block;
+	height: 100%;
+}
+
+#titlecopy {
+	font-family:Arial, sans-serif;
+	font-size:12px;
+}
+
+label { display: block; }
+
+
+/* from http://code.tutsplus.com/tutorials/quick-and-easy-javascript-testing-with-assert--net-14050 */
+a {
+    /*color: #0060B6;*/
+	color: #654b24; /*jqueryui brown*/
+    /*text-decoration: none;*/
+}
+
+.modelparams {
+	color: #000; /*#8000FF;*/
+	display: none;
+	/* background-color: #DDD; */ /*#DDFFDD;*/
+	font-size: 14px;
+}
+#reference {
+	/*background-color: #DDD;*/ /*#DDFFDD;*/
+	font-size: 18px;
+}
+#reffi {
+	color: #000; /*#8000FF;*/
+	font-size: 15px;
+}
+#reference, .modelparams {
+	/* background-color: #FFF; */
+	background-color: #ccc;
+}
+
+span.ui-selectmenu-text {
+	padding: 3px 2px 2px 2px !important;
+}
+
+.ui-spinner-input {
+	margin: .1em 27px .1em 0.4em!important;
+}
+.modname {
+	font-weight: bold;
+}
+.parheader {
+	padding: 3px 0 0 0;
+	font-size: 18px;
+	text-align: center;
+	color: #000; /*#8000FF;*/
+}
+#PD {
+	display: inline-block;
+}
+
+
+body,html {
+	/* font-size: 100%; */
+	font-family:Arial, sans-serif;
+	width: 100%;
+	height: 100%;
+	margin: 0px;
+	border: 0;
+	overflow: hidden; /*  Disable scrollbars */
+	display: block;  /* No floating content on sides */			
+	font-size: 13px;
+}
+[logLabel] {
+	display: inline-block;
+	/* color:#000000 ; */
+	border:0;
+	width: 200px;
+	text-align: right;
+	/* font-size: 15px; */
+}
+/*for logparams */
+#ThreeDtable .loglabel {
+	width: 100px;
+	color: red;
+}
+	
+[data-par] {
+	display: inline-block;
+	/* color:#000000 ; */
+	border:0;
+	width: 100px;
+	text-align: right;
+	/* font-size: 15px; */
+}
+
+.param {
+	font-weight:bold;
+	width: 60px;
+}
+
+[data-nogi] {
+	font-size:12px; 
+	max-width:450px; 
+	word-wrap:break-word;
+}
+
+.unselectable { /* used for canvas */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  /*user-select: none;*/
+}
+/* control output */
+.backlink {
+	font-size: 16px;
+	font-family:Arial, sans-serif;
+	text-align: right;
+	/* background-color: red; */
+}
+.flashy {
+	position: absolute;
+	display: none;
+    z-index: 10;
+	color: black;
+	opacity: 0.7;
+	background-color: white;
+	font-size: 20px;
+	font-family:monospace;
+}
+
+pre.inline {
+   display: inline;
+}
+[slider] {    
+	width: 220px;
+	display: block;
+}
+
+#helpexit {
+	text-align: right;
+}
+
+.optionGroup {
+	display: flex;
+	justify-content: space-between;
+}
+
+
+.headclass, #settingsWindow #head,  #settings3DWindow #head  {
+	font-size:14px;
+	font-weight: bold;
+	text-align: center;
+}
+
+#settingsWindow, #settings3DWindow {
+	font-family:Arial, sans-serif;
+	font-size:12px;
+	color: white;
+	opacity: 0.8;
+	background-color: #888;
+    position: absolute;
+    z-index: 10;
+    top: 50%;
+    left: 50%;
+    margin-top: -200px;
+    margin-left: -100px;
+	display: none;
+	/*
+    width: 600px; 
+	*/
+    /* height: 700px; */
+}
+#settings3DWindow {
+	background-color: #55c;
+}
+#keyhelpWindow {
+	font-family:Arial, sans-serif;
+	color: white;
+	opacity: 0.8;
+    z-index: 10;
+	background-color: #777;
+	font-size: 12px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -200px;
+    margin-left: -100px;
+    width: 280px;
+	display: none;
+    /* height: 700px; */
+	/*text-align: center;*/
+}​
+
+/*
+@media (orientation:landscape) {	
+	body{}	
+}
+*/
+#XY {
+	font-family:Arial, sans-serif;
+	font-size:34px;
+	 position: absolute;
+	 color: red;
+    top: 2%;
+    left: 2%;
+	
+}
+
+#prelimNotice button {
+	font-size: 20px;
+	color: blue;
+}
+
+#exitbut {
+	font-size: 20px;
+}
+
+#prelimNotice{
+	opacity: 0.4;
+}
+
+.ButtonSingleStep
+{
+    background-image: url(images/SingleStep_gs.png);   
+    background-repeat: no-repeat; 
+    border: none;
+	width: 50px;
+	height: 50px;
+}
+.ButtonSignals
+{
+    background-image: url(images/Signals_gs.png);   
+    background-repeat: no-repeat; 
+    border: none;
+	width: 50px;
+	height: 50px;
+}
+
+.ButtonNodes
+{
+    background-image: url(images/Nodes.png);   
+    background-repeat: no-repeat; 
+    border: none;    
+	width: 50px;
+	height: 50px;
+}
+
+.ButtonEdges
+{
+    background-image: url(images/Edges.png);   
+    background-repeat: no-repeat; 
+    border: none;    
+	width: 50px;
+	height: 50px;
+}
+
+.ButtonVoronoi
+{
+    background-image: url(images/Voronoi_gs.png);   
+    background-repeat: no-repeat; 
+    border: none;    
+	width: 50px;
+	height: 50px;
+}
+.ButtonAutoRestart
+{
+    background-image: url(images/AutoRestart_gs.png);   
+    background-repeat: no-repeat; 
+    border: none;    
+	width: 50px;
+	height: 50px;
+}
+
+#model {
+	width: 150px;
+}
+
+.ButtonFields
+{
+    background-image: url(images/Rotate_gs.png);   
+    background-repeat: no-repeat; 
+    border: none;    
+	width: 50px;
+	height: 50px;
+}
+
+.ButtonPDs
+{
+    background-image: url(images/PDs.png);   
+    background-repeat: no-repeat; 
+    border: none;    
+	width: 50px;
+	height: 50px;
+}
+
+.ButtonPDs:checked
+{
+    background-image: url(images/PDs.png);   
+}
+
+.ButtonTrace
+{
+    background-image: url(images/Trace.png);   
+    background-repeat: no-repeat; 
+    border: none;    
+	width: 50px;
+	height: 50px;
+}
+
+/* help table */
+.mybox {
+	border-style:solid;
+	border-width:1px;
+	padding: 1px 5px;
+}
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{
+	font-family:Arial, sans-serif;
+	font-size:14px;
+	padding:4px 5px;
+	border-style:solid;
+	border-width:1px;
+	overflow:hidden;
+	word-break:normal;
+	}
+.seldiff .symbutton {
+		width: 80px;
+}
+.ctrl .symbutton {
+		/*width: 90px;*/
+}
+
+#nonroot .symbutton {
+		width: 100%;
+}
+.free {
+	float:left;
+	background-color: blue;
+	width: 100%;
+	height: 100%;
+	/* display:inline-block;*/
+}
+#nonroot2 .symbutton {
+		width: 100%;	
+}
+.picbutton {
+	vertical-align: top;
+}
+.symbutton {
+	font-size:13px;
+	vertical-align: top !important;
+	margin-top: 0px;
+}
+.symbutton .onoff{
+	font-size:16px;
+	width: unset;
+}
+#div3d {
+	display: none;
+	position: relative;
+	border: 0px solid red;
+	background-color: #ccf;
+	z-index:10;
+}
+#div3H {
+	display: none;
+	position: absolute;
+	bottom: 40px;
+	left: 0px;
+	opacity: 0.8;
+	/* background-color: #afa; */
+	background-color: #ccc;
+	border: 1px solid black;
+	z-index:1200;
+}
+#div3Hs {
+	width: 20px;
+	height: 100px;
+	display: none;/* flex; */
+	align-items: center;
+	justify-content: space-around;
+	position: absolute;
+	bottom: 40px;
+	left: 0px;
+	opacity: 0.8;
+	/* background-color: #9f9; */
+	background-color: #ccc;
+	border: 1px solid black;
+	z-index:1200;
+}
+/* div for graphic frames ............ */
+#graphContainer {
+	vertical-align: top;
+	display: inline-block;
+	position: relative; 
+	/* left:-0px; */
+	border: 0px solid red;
+	margin: 0px;
+	/*background-color: #0cf;*/
+	z-index:5;
+}
+.parent {
+  display: flex;
+  width: 300px;
+  /*height: 600px;*/ /* Or whatever */
+  flex-direction: column;
+  /*align-items: stretch;*/
+  justify-content: flex-start;
+  align-content: flex-end;
+  align-items: stretch;
+}
+.parent2 {
+  display: flex;
+  justify-content: space-between;
+  /*width: 100%;*/
+  /*background-color: #444;*/
+  /*height: 300px;  Or whatever */
+  /*flex-direction: row;*/
+}
+.MM4 button {
+	flex-grow: 1;
+}
+.parent2.MM4 {
+  display: flex;
+  justify-content: space-between;
+  /*width: 100%;*/
+  /*background-color: #444;*/
+  /*height: 300px;  Or whatever */
+  /*flex-direction: row;*/
+}
+#mrdoob {
+  display: flex;
+	border: 0px solid #000;
+  /*justify-content: space-between;*/
+}
+.parent.button{
+  width: 80px;  /* Or whatever */
+  /* height: 100px; Or whatever */
+  /*margin: auto;  Magic! */
+}
+.parent2.button{
+	flex-grow: 1;
+}
+#OHDbuttons {
+	width: 180px;
+	/*background-color: red;*/
+}
+
+#mycanvas {
+	position:relative;
+}
+
+#OHDbuttons button {
+	width: 110px;
+}
+
+#hideControls2 {
+	align-self: left;
+	width: 70px !important;
+	margin-top: 8px;
+}
+div.parent2.c0 {
+	margin-bottom: 5px;
+}
+div.parent2.c1 {
+	margin: 0 5px 5px 5px;
+}
+body {
+	background-color: #fff;
+	/*background-color: #ccc;*/
+}
+.but1 button {
+	width: 70px;
+	flex-grow:  1;
+}

@@ -1,0 +1,47 @@
+ <!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>DemoGNG Manual</title>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="manual.css">
+<script src="js/analytics.js"></script>
+<style>
+iframe {
+	width: 300px;
+	height: 300px;
+	display: inline-block;
+	z-order: -5;
+}
+</style></head>
+<body>
+<a href="manual3.html"><i class="fa fa-arrow-left" aria-hidden="true"></i> prev</a>
+<a href="manual5.html">next <i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+
+<div id="myhead">Special Parameters</div>
+<h2>Growing Neural Gas</h2>
+<ul>
+<li> By checking <span class="cb">freezeStructure</span> the current network topology becomes frozen (indicated by blue edges) i.e. no more additions or removals of nodes and edges take place. In particular for non-stationary distributions or after changing distributions one can see how a fixed structure is not so well suited to represent the data.
+<li> When <span class="cb">showError</span> is checked, the accumulated square error of each unit is displayed as a red circle of proportional radius.
+<li> When <span class="cb">showUtility</span> is checked, the accumulated Utility of each unit is displayed as a blue circle of proportional radius.
+<li> If neither of the two above boxes is checked each unit is represented by a circle of equal radius.
+<li> The parameter <span class="cb">numfac</span> changes the size of the error and utility circles which can vary with network size and parameter settings.
+</ul>
+<h2>Self-organizing Map</h2>
+<ul>
+<li>By setting <span class="cb">n1</span> and <span class="cb">n2</span> on can define different <a href="js/demogng.html?model=SOM&som_n_1=5&som_n_2=100&som_sigma_i=7&showAutoRestart" target="_blank">rectangular shapes</a> or even  <a href="js/demogng.html?model=SOM&som_n_1=100&som_n_2=1&som_sigma_i=7&showAutoRestart" target="_blank">one-dimensional chains</a>
+</ul>
+n1=3, n2=40:
+<iframe id="miframe" src="js/demogng.html?_3DV=0&mini&mode=embedded&distribution=Cactus&model=SOM&som_n_1=3&som_n_2=40&som_sigma_i=7&showAutoRestart&noads"> </iframe>
+&nbsp;n1=1, n2=80:
+<iframe id="miframe" src="js/demogng.html?_3DV=0&mini&mode=embedded&distribution=Cactus&model=SOM&som_n_1=1&som_n_2=80&som_sigma_i=7&showAutoRestart&noads"> </iframe>
+<h2>Growing Grid</h2>
+<ul>
+<li>By setting <span class="cb">n1_max</span> to a small value one can limit the growth in one dimension and force the network to develop along the other one leading to <a href="js/demogng.html?model=GG&gg_n_1_max=3&showAutoRestart" target="_blank">long rectangles</a> or (for n1_max=1) to  <a href="js/demogng.html?model=GG&gg_n_1_max=1&showAutoRestart" target="_blank">one-dimensional chains</a>
+</ul>
+n_1_max=3:<iframe id="miframe" src="js/demogng.html?_3DV=0&mini&mode=embedded&distribution=Cactus&model=GG&gg_n_1_max=3&showAutoRestart&noads"> </iframe>
+&nbsp;n_1_max=1:<iframe id="miframe" src="js/demogng.html?_3DV=0&mini&mode=embedded&distribution=Cactus&model=GG&gg_n_1_max=1&showAutoRestart&noads"> </iframe>
+
+
+</body>
+</html> 

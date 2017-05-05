@@ -1,0 +1,37 @@
+ <!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>DemoGNG Manual</title>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="manual.css">
+<script src="js/analytics.js"></script>
+<style>
+iframe {
+	width: 300px;
+	height: 300px;
+	display: block;
+	z-order: -5;
+}
+</style>
+</head>
+<body>
+<a href="manual4.html"><i class="fa fa-arrow-left" aria-hidden="true"></i> prev</a>
+<a href="manual6.html">next <i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+
+<H1>Probability Distributions</H1>
+A certain number of example probability distributions are provided.  Some are <em>non-stationary</em>, i.e. they change over time (time is not measured in seconds but in number of input signals presented). 
+<h2>Stationary Distributions</h2>
+Most of the distributions are <em>stationary</em> i.e. they do not change over time. Examples are "Circle", "Corners" or "Cactus".
+<iframe id="miframe" src="js/demogng.html?_3DV=0&mini&mode=embedded&distribution=Cactus&gng_n_max=10&gng_showError=0"> </iframe>
+
+<h2>Non-Stationary Distributions</h2>
+The non-stationary distributions are indicated by a name ending with "-N" like "Circle-N", "Corners-N" or "PulsingCircle-N".
+<iframe id="miframe" src="js/demogng.html?_3DV=0&mini&mode=embedded&distribution=PulsingCircle-N&gng_n_max=10&gng_showError=0"> </iframe>
+Only models with constant parameters, e,g, Growing Neural Gas, Growing Grid, or Hard Competitive Learning are able to handle non-stationary parameters. Models with decaying parameters, e.g. Self-Organizing Map or Neural Gas on purpose loose there adaptivity after a finite number of steps. Therefore the "Next PD" or "Prev PD" Buttons select only stationary distributions for these models.
+<br>
+One distribution - "DragMe" - allows the non-stationarity to be user-controlled using the mouse.
+<h2>Rotation</h2>
+Each stationary distribution (unless it is rotation-symmetric) can be turned into a non-stationary one by activating rotation
+<iframe id="miframe" src="js/demogng.html?_3DV=0&mini&mode=embedded&distribution=Cactus&showRotate&gng_n_max=10&gng_showError=0"> </iframe></body>
+</html> 

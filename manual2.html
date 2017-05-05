@@ -1,0 +1,38 @@
+ <!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>DemoGNG Manual</title>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="manual.css">
+<script src="js/analytics.js"></script>
+</head>
+<body>
+<a href="manual1.html"><i class="fa fa-arrow-left" aria-hidden="true"></i> prev</a>
+<a href="manual3.html">next <i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+
+<h1>Display Modes</h1>
+<a href="index.html">DemoGNG</a> has two display modes: "Desktop" and "Mobile". "Desktop" is the default for larger screens and "Mobile" for small screens or if a mobile device (tablet or phone) is detected. Both modes, however, can be activated on all types of devices.
+<h2>Desktop Mode</h2>
+<p>In "Desktop" mode the screen looks like this:</p>
+<img src="documentation/desktop_annotated.png">
+
+<p>The "canvas" is displayed at the right. It shows the signal distribution and the current state of the network.</p>
+
+ <p>On the left upper side general parameters can be set (model, signal distribution, simulation speed etc.). The simulation can be started, stopped and reset. Several display options (e.g. signal distribution, nodes, edges, input signals, Voronoi diagram, faces, statistics) can be witched on and off.</p>
+<p> One of three special modes can be activated:</p> 
+ <ul>
+ <li> auto restart mode: the current model is repeatedly started with different signal distributions
+ <li> single step mode: the current model is redrawn after each signal. In between signals a pause is held (default: 300ms)
+ <li> demo mode: different combinations of model and distribution are simulated.
+ </ul>
+ <p> On the lower left parameters specific to the chosen model can be set.
+ </p>
+<h2>Mobile Mode</h2>
+
+<p>In "Mobile" mode only the canvas is shown. Some parameters can be set via the mouse or keyboard or via touch actions (see below). </p>
+<img src="documentation/canvas_annotated.png">
+<br>
+
+</body>
+</html> 

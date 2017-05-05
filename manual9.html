@@ -1,0 +1,64 @@
+ <!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>DemoGNG Manual</title>
+<link rel="stylesheet" href="manual.css">
+<script src="js/analytics.js"></script>
+<style>
+iframe {
+	width: 400px;
+	height: 400px;
+	display: inline-block;
+	vertical-align: top;
+	z-order: -5;
+}
+</style>
+<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+</head>
+<body>
+<a href="manual8.html"><i class="fa fa-arrow-left" aria-hidden="true"></i> prev</a>
+<aa href="manual3.html">next <i class="fa fa-arrow-right" aria-hidden="true"></i></aa>
+
+<H1>3D Mode</H1>
+ 
+There is also a 3D-mode (now the default) of the simulator (realized with WebGL, specifically <a href="https://threejs.org/" target="_blank">threejs</a>). 
+The 3D-mode can be activated (and de-activated) with the "2D/3D"-button. In 3D-mode most probability distributions get extended into the 
+third dimension z by simply setting z to a random number between 0 and 1. The regions of positive probability density are indicated by semi-transparent geometric bodies.
+
+
+
+
+ <p>
+ <div style="display:block">
+
+   <iframe id="miframe" src="js/demogng.html?showAutoRestart&_3DV"> </iframe>
+ &nbsp;&nbsp;
+  <img src="images/3D2.jpg" width="440px">
+ 
+ </div>
+ The following navigation is possible in the 3D-window:
+
+<ul>
+<li> drag with left mouse-button: rotate scene around center in various ways using an Orbit control.
+<li> drag with right mouse-button: move the scene in the viewing plane (up, down, left, right)
+<li> mouse wheel: change zoom
+<li> arrow buttons: move the camera up/down/left/right
+</ul>
+ 
+ There are similar operation with touch devices:
+ <ul>
+ <li> one finger: rotate scene
+ <li> two fingers: change zoom
+ <li> three fingers: shift scene
+ </ul>
+
+ Continuous camera movements around the axes x,y,z (actual center of rotation is the point [0.5, 0.5, 0.5] i.e. the center of the unit cube) can be triggered as follows with keys:
+ 
+ <ul>
+<li> "x" - toggle x-rotation (x-axis is red)
+<li> "y" - toggle y-rotation (y-axis is green)
+<li> "z" - toggle z-rotation (z-axis is blue)  - this is <b>on per default</b>
+</ul>
+
+</html> 

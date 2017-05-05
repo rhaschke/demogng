@@ -1,0 +1,82 @@
+ <!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+
+<style>
+body {
+font-family:Arial, sans-serif;
+text-align: left;
+width: 1000px;
+}
+h1 {
+font-size: 24px;
+}
+#aut {
+font-size: 12px;
+}
+
+#info { 
+    height: 20px; 
+    position: fixed; 
+    bottom:0%;
+    width:100%; 
+    background-color: #CCCCCC;
+	color: black;	
+    opacity: 1;
+	text-align: center;
+}
+li {
+	margin: 20px 10px 0px 0px
+}
+
+
+</style>
+<script src="js/analytics.js"></script>
+<title>About DemoGNG.js</title>
+</head>
+<body>
+<h1>About DemoGNG.js</h1>
+
+<p>
+What is this site for?
+
+<ul>
+<li> illustrating (e.g. to students or researchers) the principles of a group of 
+computational models which all rely on vectors 
+to characterize an underlying data set or continuous probability distribution. 
+Applications of such models are in data compression,
+ clustering, function approximation and more. The models can be seen as belonging to the "Big Data" domain.
+<li> provide a successor for the previous DemoGNG simulator which was
+ realized in 1995 by Hartmut Loos under my 
+supervision. Since this simulator was realized as a
+ Java applet it can not be reasonably used any more due to decreasing or lacking applet support in the major browsers.
+A link to the page for the DemoGNG applet can be found <a href="http://www.demogng.de/javademogng.html">here</a>
+<li> Having fun!  Experimenting with the network models can produce nice images and 
+interesting animations. Luckily JavaScript has become quite fast and supports reasonable frame rates. 
+Try out the simple touch interface if you have a supporting device (tablet, smartphone or PC touchscreen). 
+Just touch the middle of the canvas shortly for instructions.
+</ul>
+<br>
+
+</p>
+<div>
+
+</div>
+<H1>Technology used</H1>
+Some packages were particularily helpful in realizing this simulator:
+<ul>
+<li> <a href="http://www.raymondhill.net/voronoi/rhill-voronoi.html"> Raymond Hill's implementation of Steven J. Fortune's algorithm to compute Voronoi diagrams</a>
+<li> The following two jQuery Foundation Projects<br>
+ <a href="https://jquery.com/"><img src="http://brand.jquery.org/resources/jquery-mark-light.gif"></a>
+ <a href="https://jqueryui.com/"><img src="http://brand.jquery.org/resources/jqueryui-mark-light.gif"></a>
+</ul>
+
+<div id="info">
+<span style="float: left;"><a href="index.html">Home</a></span><a href="Impressum.html">Impressum</a>
+</div>
+
+
+</body>
+</html> 
+

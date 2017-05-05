@@ -1,0 +1,32 @@
+ <!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>DemoGNG Manual</title>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="manual.css">
+<script src="js/analytics.js"></script>
+</head>
+<body>
+<aa href="manual2.html"><i class="fa fa-arrow-left" aria-hidden="true"></i> prev</aa>
+<a href="manual2.html">next <i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+
+<div id="myhead">DemoGNG Manual</div>
+
+<h1>About</h1>
+This document is a description how to interact with the the <a href="index.html" target="_blank">DemoGNG</a> simulator. Information on the implemented models can be found in the specific original literature and in the tech-report <a href="http://demogng.de/JavaPaper/t.html">"Some Competive Learning Methods"</a> (available in <a href="http://demogng.de/papers/sclm.pdf">pdf format</a> as well) which uses a common notation for all models. German speaking individuals could also look at my habilitation thesis <a href=
+"http://demogng.de/papers/habil.pdf">Vektorbasierte Neuronale Netze</a>.
+<h1>Usage</h1>
+<h2>Basic</h2>
+The most basic usage consists of the following steps:
+<ul>
+<li> choose a signal distribution (e.g. "Cactus")
+<li> choose a network model (e.g. "Self-Organizing Map")
+<li> observe the <a href="js/demogng.html?_3DV=0&model=SOM&distribution=Cactus&showAutoRestart" target="_blank">simulation</a>
+</ul>
+Usually the simulation automatically starts after choosing a new model. Choosing a new distribution triggers a restart if the current model is not able to handle non-stationary distributions. Beyond that the simulation can be stopped and continued, reset or restarted at any time.
+<h2>Advanced</h2>
+Advanced users can experiment with the model parameters which in many cases can be modified also while the simulation runs. It is also possible to drag single nodes with the mouse or delete them by dragging them off the canvas. Further details can be seen in the "Single-Step" mode and a model can be automatically run with different distributions in "Auto-Restart Mode".
+
+</body>
+</html> 

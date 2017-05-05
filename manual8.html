@@ -1,0 +1,44 @@
+ <!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>DemoGNG Manual</title>
+<link rel="stylesheet" href="manual.css">
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+<script src="js/analytics.js"></script>
+<style>
+iframe {
+	width: 400px;
+	height: 400px;
+	display: inline-block;
+	vertical-align: top;
+	z-order: -5;
+}
+</style>
+</head>
+<body>
+<a href="manual7.html"><i class="fa fa-arrow-left" aria-hidden="true"></i> prev</a>
+<a href="manual9.html">next <i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+
+<H1>General Settings</H1>
+ 
+ A number of normally not often modified settings can be accessed via the "General Settings" window available via typing "p" (for "parameters") in the canvas or via the cog button on the interface.
+ <p>
+ A minimal explanation appears as tooltip if you hover over the parameter with the mouse.
+ <p> One perhaps more interesting parameter is "initFromPD" (default: true): If this is unchecked then the intial node positions are drawn at random from the unit square (ignoring the distribution).
+ 
+ <p>
+ The simulation below shows the effect of this setting.
+ 
+ 
+ <p>
+ <div style="display:block">
+
+ <img src="images/settings.png" width="440px">
+ &nbsp;&nbsp;
+  <iframe id="miframe" src="js/demogng.html?_3DV=0&mini&mode=embedded&distribution=Circle-N&model=HCL&initFromPD=0&showVoronoi&noads&showAutoRestart"> </iframe>
+
+ </div>
+ 
+
+</html> 

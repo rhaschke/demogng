@@ -1,0 +1,48 @@
+ <!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>DemoGNG Manual</title>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="manual.css">
+<script src="js/analytics.js"></script>
+<style>
+.touchhelp {
+float: none;
+	width: 400px;
+	height: 400px;
+}
+iframe {
+	width: 400px;
+	height: 400px;
+	display: inline-block;
+	z-order: -5;
+}
+</style>
+</head>
+<body>
+<a href="manual2.html"><i class="fa fa-arrow-left" aria-hidden="true"></i> prev</a>
+<a href="manual4.html">next <i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+
+
+<h1>Touch/Mouse Interface (specific to 2D-mode)</h1>
+On the 2D-canvas certain parameters can be set via horizontal motions and clicks. Certain functions can be invoked by vertical up-moves. This works both with mouse and touch events and both in desktop and mobile mode.
+<p>See also the section on <a href="manual7.html">Keyboard/Wheel Control</a>. In <a href="manual9.html">3D-mode</a> the interaction is mainly concerned with zoom and perspective.
+<h2>Horizontal Moves</h2>
+<p>The canvas is partitioned into three horizontal zones of equal size. Each zone corresponds to one parameter (top: model, middle: distribution, bottom: simulation speed). Horizontal swiping (on a touch device) or horizontal mouse-dragging (on a normal desktop device) changes the corresponding parameter.</p>
+<img class="touchhelp" width="100" src="documentation/touchhelp1.png">
+&nbsp;&nbsp;
+ <iframe id="miframe" src="js/demogng.html?_3DV=0&mini&mode=embedded&model=GG&distribution=Cloud&noads"> </iframe></div>
+<h2>Vertical Moves</h2>
+<p>The canvas is also partitioned into three vertical zones of equal size. Each zone corresponds to one function (left: reset(), center: start()/stop(), right: restartFun()=reset()+start()). Vertical up-swiping (on a touch device) or vertical upward-dragging with the mouse(on a normal desktop device) invokes the corresponding function.</p>
+<img class="touchhelp" src="documentation/touchhelp2.png">
+&nbsp;&nbsp;
+ <iframe id="miframe" src="js/demogng.html?_3DV=0&mini&mode=embedded&model=NG&distribution=Cloud&noads"> </iframe></div><h2>Click Actions</h2>
+<p>Finally, also some click-sensitive areas have been defined to toggle certain options or invoke function. A "click" is a short touch without move on a touch device or a normal single-click with the mouse.</p>
+<img class="touchhelp" src="documentation/touchhelp3.png">
+&nbsp;&nbsp;
+ <iframe id="miframe" src="js/demogng.html?_3DV=0&mini&mode=embedded&model=HCL&distribution=Cloud&noads"> </iframe></div><h2>Reminder Overlays</h2>
+<p>
+As a reminder of the touch/mouse interface the overlays shown above can be toggled by clicking on an unused area of the canvas (no nodes, no special click-sensitive location), e.g. the center of the canvas. Then clicking on "(next page)" leads to the next overlay.</p>
+</body>
+</html> 

@@ -1,0 +1,37 @@
+ <!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>DemoGNG Manual</title>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="manual.css">
+<script src="js/analytics.js"></script>
+<style>
+iframe {
+	width: 300px;
+	height: 300px;
+	display: inline-block;
+	vertical-align: top;
+	z-order: -5;
+}
+</style>
+</head>
+<body>
+<a href="manual5.html"><i class="fa fa-arrow-left" aria-hidden="true"></i> prev</a>
+<a href="manual7.html">next <i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+
+<H1>Visualization Variants</H1>
+ 
+<h2>Voronoi Diagrams</h2>
+A useful display for a set of vectors in 2D is a Voronoi diagram (see <a href="https://en.wikipedia.org/wiki/Voronoi_diagram" target="_blank">wiki explanation</a>). Sometimes it is insightful to see only the Voronoi diagram and leave out the cells and edges.
+<br>
+<br>With Voronoi Diagram:<iframe id="miframe" src="js/demogng.html?_3DV=0&mini&mode=embedded&distribution=Cactus&gng_n_max=30&gng_showError=0&showVoronoi&showAutoRestart"> </iframe>
+&nbsp;&nbsp;w/o nodes and edges:<iframe id="miframe" src="js/demogng.html?_3DV=0&mini&mode=embedded&distribution=UnitSquare&model=SOM&som_n_2=1&som_n_1=100&som_sigma_i=10&som_sigma_f=2&showNodes=0&showEdges=0&showVoronoi&showAutoRestart"> </iframe>
+<p>
+Can you identify the positions of the nodes just by looking at the Voronoi diagram? 
+<p>For the solution type "n" anywhere within the simulation canvas (see <a href="manual7.html">here</a> for a complete list of keyboard shortcuts).
+<p>
+DemoGNG makes use of 
+<a href="http://www.raymondhill.net/voronoi/rhill-voronoi.html" target="_blank"> Raymond Hill's implementation of Steven J. Fortune's algorithm to compute Voronoi diagrams</a>
+
+</html> 

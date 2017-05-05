@@ -1,0 +1,73 @@
+ <!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>DemoGNG Manual</title>
+<style>
+.touchhelp {
+	width: 500px;
+}
+#myhead {
+	font-family:Arial, sans-serif;
+	font-size:34px;
+	text-align: center;
+	}
+	
+.floater { 
+float:left; 
+position: fixed;
+top: 0px;
+left: 0px;
+}
+.non-floater { 
+overflow:hidden;
+margin-left: 200px; }
+
+iframe { 
+width:100%; 
+padding:0; 
+border:0; 
+height:1000px; }
+
+#navi {
+float: left;
+width: 200px;
+height:1000px;
+background-color: #ddd;
+padding-left: 10px;
+}
+img {
+float: left;
+}
+.toclink {
+display: block;
+}
+</style>
+
+
+<script src="js/analytics.js"></script>
+</head>
+<body>
+<div id="navi" class=floater>
+<a class="toclink" href="manual1.html" target="miframe">Intro</a>
+<a class="toclink" href="manual2.html" target="miframe">Display Modes</a>
+<a class="toclink" href="manual3.html" target="miframe">Touch/Mouse Control</a>
+<a class="toclink" href="manual4.html" target="miframe">Special Parameters</a>
+<a class="toclink" href="manual5.html" target="miframe">Probability Distributions</a>
+<a class="toclink" href="manual6.html" target="miframe">Visualization Variants</a>
+<a class="toclink" href="manual7.html" target="miframe">Keyboard/Wheel Control</a>
+<a class="toclink" href="manual8.html" target="miframe">General Settings</a>
+<a class="toclink" href="manual9.html" target="miframe">3D Mode</a>
+
+<br><br>
+<a class="toclink" href="js/demogng.html?_3DV=0&" target="_blank">simulator (2D-mode)</a>
+<p>
+<a class="toclink" href="js/demogng.html?_3DV" target="_blank">simulator (3D-mode)</a>
+
+
+</div>
+<div class=non-floater>
+<iframe src="manual1.html" name="miframe"></iframe>
+</div>
+</body>
+</html> 

@@ -1,0 +1,26 @@
+.touchhelp {
+	width: 500px;
+}
+#myhead {
+	font-family:Arial, sans-serif;
+	font-size:34px;
+	text-align: center;
+	}
+h1, h2 {
+	clear: both;
+}
+#navi {
+float: left;
+width: 100px;
+height:2000px;
+background-color: #aaf;
+}
+img {
+/*float: left;*/
+}
+.cb {
+  background-color:#ddf;
+  color:#000;
+  font-weight: bold;
+  padding: 0 4px 0 4px;
+}
