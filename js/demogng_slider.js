@@ -466,6 +466,12 @@ xx = new LogPar({
 });
 xx = new LogPar({
     model: "GNG",
+    name: "gng_doGlobalEdgeAging",
+    value: true,
+    rem: "GNG: Use global edge aging every N steps"
+});
+xx = new LogPar({
+    model: "GNG",
     name: "gng_doUtility",
     value: false,
     rem: "GNG-U: use utility to remove nodes"

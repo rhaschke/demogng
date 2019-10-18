@@ -91,7 +91,6 @@ var discSize = 3000;
 var maxSignalsDrawn = 500;
 
 var sigStore;
-var doGlobalEdgeAging = true;
 var debug = false;
 var nn; // le net
 var signalsPresented;

@@ -2145,7 +2145,7 @@ VBNN.prototype.adaptGNG = function (signal, checkUtil) {
     }
     // global edge aging - for efficiency only sometimes, depending on network size
     var edgesToRemove = [];
-    if (doGlobalEdgeAging && signalsPresented % this.noOfNodes === 0) {
+    if (glob.gng_doGlobalEdgeAging && signalsPresented % this.noOfNodes === 0) {
         // age all edges
         for (i in this.edges) {
             this.edges[i].age++;
